@@ -1,0 +1,70 @@
+<project name="scotlandyard" basedir="." default="main">
+
+	<property name="src.dir" value="src" />
+	<property name="build.dir" value="bin" />
+	<property name="test.dir" value="tests" />
+	<property name="classes.dir" value="${build.dir}/classes" />
+	<property name="jar.dir" value="${build.dir}/jar" />
+	<property name="test_classes.dir" value="${build.dir}/tests" />
+	<property name="lib.dir" value="lib" />
+	<property name="test_main" value="TestRunner" />
+    <property name="console_main" value="ConsoleGame" />
+
+
+	<target name="clean">
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="compile">
+		<mkdir dir="${classes.dir}" />
+		<javac srcdir="${src.dir}" includeantruntime="false" destdir="${classes.dir}" />
+	</target>
+
+	<target name="jar" depends="compile">
+		<mkdir dir="${jar.dir}"/>
+		<jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}" />
+	</target>
+
+
+    <target name="play" depends="jar">
+        <java classname="${console_main}">
+            <classpath>
+                <pathelement location="${classes.dir}" />
+                <path location="${jar.dir}/${ant.project.name}.jar" />
+            </classpath>
+        </java>
+    </target>
+
+
+	<path id="tests_classpath">
+		<fileset dir="${lib.dir}" includes="**/*.jar" />
+		<fileset dir="${jar.dir}" includes="${ant.project.name}.jar" />
+	</path>
+
+	<target name="compile-tests" depends="compile,jar">
+		<mkdir dir="${test_classes.dir}" />
+		<javac srcdir="${test.dir}" includeantruntime="false" destdir="${test_classes.dir}" classpathref="tests_classpath" />
+	</target>
+
+	<target name="test" depends="compile-tests">
+		<junit>
+			<classpath>
+				<pathelement location="${test_classes.dir}" />
+				<path refid="tests_classpath" />
+				<path location="${jar.dir}/${ant.project.name}.jar" />
+			</classpath>
+		    <test name="InitialisationTests" />
+            <test name="RoundsTests" />
+            <test name="MrXLocationsTests" />
+			<test name="DetectiveValidMovesTests" />
+            <test name="MrXValidMovesTests" />
+			<test name="PlayTests" />
+            <test name="SpectatorTests" />
+            <test name="PlayerNotifyTests" />
+            <test name="IsGameOverTests" />
+            <test name="GetWinningPlayersTests" />
+			<formatter type="brief" usefile="false" />
+		</junit>
+	</target>	
+
+</project>
