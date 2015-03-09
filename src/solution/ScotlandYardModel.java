@@ -36,7 +36,7 @@ private final List<Boolean> showRounds;
 		this.numberOfDetectives = numberOfDetectives;
 		showRounds = rounds;
 		
-		List<Colour> orderOfPlay = new ArrayList<Colour>();		
+		orderOfPlay = new ArrayList<Colour>();		
 		colourToPlayer = new HashMap<Colour,Player>();
 		colourToTickets = new HashMap<Colour,Map<Ticket,Integer>>();
 		colourToLocation = new HashMap<Colour, Integer>();
@@ -81,7 +81,7 @@ private final List<Boolean> showRounds;
     //Adds a player to the game, storing the player's colour, location and tickets. 
     @Override 
     public boolean join(Player player, Colour colour, int location, Map<Ticket, Integer> tickets) {
-	if(orderOfPlay.contains(colour)) return false; //how should we handle false return? 
+	if(orderOfPlay!=null && orderOfPlay.contains(colour)) return false; //how should we handle false return? 
     	else {
 	    	orderOfPlay.add(colour);
 	    	sortColours(orderOfPlay);
@@ -144,12 +144,10 @@ private final List<Boolean> showRounds;
     //Ensures Black is at the front of the list. 
     private List<Colour> sortColours(List<Colour> colours) {
 	int index = colours.indexOf(Colour.Black); //not sure this the best way to implement? 
-	if(index != -1) {
-		colours.remove(index);
+	if(index != (-1)) {
 		Colour firstColour = colours.get(0);
-		colours.remove(0);
-		colours.add(0,Colour.Black);
-		colours.add(index,firstColour);	
+		colours.set(0,Colour.Black);
+		colours.set(index,firstColour);	
 	}
 	return colours;
     }
