@@ -20,7 +20,7 @@ private int numberOfDetectives;
 private final List<Boolean> showRounds; 
 
     //Class constructor reads and stores graph and game attributes (e.g. num of players, show rounds). 	
-    public ScotlandYardModel(int numberOfDetectives, List<Boolean> rounds, String graphFileName) { 
+    public ScotlandYardModel(int numberOfDetectives, List<Boolean> rounds, String graphFileName) throws IOException{ 
         super(numberOfDetectives, rounds, graphFileName); // ask TA
         
 		ScotlandYardGraphReader reader = new ScotlandYardGraphReader();
