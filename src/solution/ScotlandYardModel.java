@@ -18,7 +18,7 @@ private Map<Colour,Map<Ticket,Integer>> colourToTickets;
 private List<Colour> orderOfPlay; 
 private int numberOfDetectives;
 private final List<Boolean> showRounds; 
-
+//lkasjdfglljs
     //Class constructor reads and stores graph and game attributes (e.g. num of players, show rounds). 	
     public ScotlandYardModel(int numberOfDetectives, List<Boolean> rounds, String graphFileName) throws IOException{ 
         super(numberOfDetectives, rounds, graphFileName); // ask TA
