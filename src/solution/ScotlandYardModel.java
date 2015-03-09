@@ -75,6 +75,22 @@ public class ScotlandYardModel extends ScotlandYard {
         return null;
     }
     
+    //returns all single moves for current player which are valid
+    // using the validEdges() function
+    private List<Move> singleMoves(Colour player)
+    {
+    	int location = colourToLocation.get(player);
+        List<Move> validMoves = new ArrayList();
+        for( Edge<Integer, Route> edge : validEdges(player))
+        {
+        	int target = edge.other(location);
+        	Ticket moveType =  Ticket.fromRoute(edge.data());
+        	Move moveTicket = new MoveTicket(player, target, moveType);
+        	validMoves.add(moveTicket);
+        }
+        return validMoves;
+    }
+    
    // returns list of valid edges (that is edges comming from node player is  
    //currently located and for which he has tickets for travel) - CURRENTLY ONLY 
    // WORKS FOR NON MRX PLAYERS!!!!!!!  
