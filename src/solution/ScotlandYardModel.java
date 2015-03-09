@@ -40,6 +40,8 @@ public class ScotlandYardModel extends ScotlandYard {
 		colourToPlayer = new HashMap<Colour,Player>();
 		colourToTickets = new HashMap<Colour,Map<Ticket,Integer>>();
 		colourToLocation = new HashMap<Colour, Integer>();
+		
+		currentPlayer = Colour.valueOf("Black");
     }
 
 
