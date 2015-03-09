@@ -68,9 +68,41 @@ public class ScotlandYardModel extends ScotlandYard {
 
     }
 
+    //returns valid moves for current player
     @Override
-    protected List<Move> validMoves(Colour player) {
+    protected List<Move> validMoves(Colour player) 
+    {
         return null;
+    }
+    
+   // returns list of valid edges (that is edges comming from node player is  
+   //currently located and for which he has tickets for travel) - CURRENTLY ONLY 
+   // WORKS FOR NON MRX PLAYERS!!!!!!!  
+    private List<Edge<Integer, Route>> validEdges(Colour player)
+    {
+    	int location = colourToLocation.get(player);
+        List<Edge<Integer, Route>> possibleEdges  = londonGraph.getEdges(location);
+        int numBus = getPlayerTickets(player, Ticket.valueOf("Bus"));
+        int numTaxi = getPlayerTickets(player, Ticket.valueOf("Taxi"));
+        int numUnderground = getPlayerTickets(player, Ticket.valueOf("Underground"));
+        List<Edge<Integer, Route>> validEdges = new ArrayList();
+        for(Edge<Integer, Route> edge : possibleEdges)
+        {
+        	Ticket edgeType = Ticket.fromRoute(edge.data());
+        	if(edgeType == Ticket.valueOf("Bus") && numBus > 0)
+        	{
+        		validEdges.add(edge);
+        	}
+        	else if(edgeType == Ticket.valueOf("Taxi") && numTaxi > 0)
+        	{
+        		validEdges.add(edge);
+        	}
+        	else if(edgeType == Ticket.valueOf("Underground") && numUnderground > 0)
+        	{
+        		validEdges.add(edge);
+        	}
+        }
+        return validEdges;
     }
 
     @Override
@@ -81,14 +113,14 @@ public class ScotlandYardModel extends ScotlandYard {
     //Adds a player to the game, storing the player's colour, location and tickets. 
     @Override 
     public boolean join(Player player, Colour colour, int location, Map<Ticket, Integer> tickets) {
-	if(orderOfPlay!=null && orderOfPlay.contains(colour)) return false; //how should we handle false return? 
-    	else {
-	    	orderOfPlay.add(colour);
-	    	sortColours(orderOfPlay);
-	    	colourToPlayer.put(colour,player);
-	    	colourToLocation.put(colour,location);
-	    	colourToTickets.put(colour,tickets);
-   	}
+		if(orderOfPlay!=null && orderOfPlay.contains(colour)) return false; //how should we handle false return? 
+			else {
+				orderOfPlay.add(colour);
+				sortColours(orderOfPlay);
+				colourToPlayer.put(colour,player);
+				colourToLocation.put(colour,location);
+				colourToTickets.put(colour,tickets);
+	   	}
         return true;
     }
 
