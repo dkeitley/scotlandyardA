@@ -10,14 +10,14 @@ import java.util.*;
 
 public class ScotlandYardModel extends ScotlandYard {
 
-private final Graph londonGraph;
-private Colour currentPlayer;
-private final Map<Colour,Player> colourToPlayer;
-private Map<Colour,Integer> colourToLocation;
-private Map<Colour,Map<Ticket,Integer>> colourToTickets;
-private List<Colour> orderOfPlay; 
-private int numberOfDetectives;
-private final List<Boolean> showRounds; 
+	private final Graph londonGraph;
+	private Colour currentPlayer;
+	private final Map<Colour,Player> colourToPlayer;
+	private Map<Colour,Integer> colourToLocation;
+	private Map<Colour,Map<Ticket,Integer>> colourToTickets;
+	private List<Colour> orderOfPlay; 
+	private int numberOfDetectives;
+	private final List<Boolean> showRounds; 
 
     //Class constructor reads and stores graph and game attributes (e.g. num of players, show rounds). 	
     public ScotlandYardModel(int numberOfDetectives, List<Boolean> rounds, String graphFileName) throws IOException{ 
@@ -128,7 +128,7 @@ private final List<Boolean> showRounds;
 
     @Override
     public Colour getCurrentPlayer() {
-        return null;
+        return currentPlayer;
     }
 
     @Override
