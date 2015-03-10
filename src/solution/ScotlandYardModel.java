@@ -74,54 +74,133 @@ public class ScotlandYardModel extends ScotlandYard {
     @Override
     protected List<Move> validMoves(Colour player) 
     {
-        return null;
+        int location = colourToLocation.get(player);
+        List<Move> validMoves = new ArrayList();
+        if(isGameOver())
+        {
+        	validMoves.add(new MovePass(player));
+        }
+        if(player == Colour.valueOf("Black"))
+        {
+        	validMoves.addAll(singleMoves(player, location));
+        	validMoves.addAll(doubleMoves(player, location));
+        }
+        else
+        {
+        	validMoves.addAll(singleMoves(player, location));
+        }
+        return validMoves;
+    }
+    
+    private List<MoveDouble> doubleMoves(Colour player, int location)
+    {
+    	List<MoveDouble> validMoves = new ArrayList();
+    	for(MoveTicket move : singleMoves(player, location))
+        {
+        	String[] subStrings = move.toString().split(" ");
+        	String moveType = subStrings[subStrings.length - 1];
+        	int target = Integer.parseInt(subStrings[subStrings.length - 2]);
+        	List<MoveTicket> secondMoves;
+        	if(moveType.equals("SecretMove"))
+        	{
+        		int numSecretMoves = getPlayerTickets(Colour.valueOf("Black"), Ticket.valueOf("SecretMove"));
+        		colourToTickets.get(Colour.valueOf("Black")).put(Ticket.valueOf("SecretMove"), numSecretMoves - 1);
+				secondMoves = singleMoves(player, target);
+        		colourToTickets.get(Colour.valueOf("Black")).put(Ticket.valueOf("SecretMove"), numSecretMoves);
+        	}
+        	else
+        	{
+        		secondMoves = singleMoves(player, target);
+        	}
+        	for(MoveTicket secondMove : secondMoves)
+        	{
+        		validMoves.add(new MoveDouble(player, move, secondMove));
+        	}
+        }
+        return validMoves;
     }
     
     //returns all single moves for current player which are valid
     // using the validEdges() function
-    private List<Move> singleMoves(Colour player)
+    private List<MoveTicket> singleMoves(Colour player, int location)
     {
-    	int location = colourToLocation.get(player);
-        List<Move> validMoves = new ArrayList();
+        List<MoveTicket> validMoves = new ArrayList();
         for( Edge<Integer, Route> edge : validEdges(player))
         {
         	int target = edge.other(location);
         	Ticket moveType =  Ticket.fromRoute(edge.data());
-        	Move moveTicket = new MoveTicket(player, target, moveType);
+        	MoveTicket moveTicket = new MoveTicket(player, target, moveType);
         	validMoves.add(moveTicket);
         }
         return validMoves;
     }
     
    // returns list of valid edges (that is edges comming from node player is  
-   //currently located and for which he has tickets for travel) - CURRENTLY ONLY 
-   // WORKS FOR NON MRX PLAYERS!!!!!!!  
+   //currently located and for which he has tickets for travel)
     private List<Edge<Integer, Route>> validEdges(Colour player)
     {
     	int location = colourToLocation.get(player);
         List<Edge<Integer, Route>> possibleEdges  = londonGraph.getEdges(location);
-        int numBus = getPlayerTickets(player, Ticket.valueOf("Bus"));
-        int numTaxi = getPlayerTickets(player, Ticket.valueOf("Taxi"));
-        int numUnderground = getPlayerTickets(player, Ticket.valueOf("Underground"));
+        List<Edge<Integer, Route>> validEdges = new ArrayList();
+        if(player == Colour.valueOf("Black"))
+        {
+        	int numSecret = getPlayerTickets(player, Ticket.valueOf("SecretMove"));
+        	return validEdgesMrX(player, location, numSecret);
+        }
+        else 
+        {
+        	int numBus = getPlayerTickets(player, Ticket.valueOf("Bus"));
+			int numTaxi = getPlayerTickets(player, Ticket.valueOf("Taxi"));
+			int numUnderground = getPlayerTickets(player, Ticket.valueOf("Underground"));
+        	return validEdgesDetective(player, location, numBus, numTaxi, numUnderground);
+        }
+    }
+    
+    // returns list of valid edges (that is edges comming from node player is  
+   	//currently located and for which he has tickets for travel) for detectives
+    private List<Edge<Integer, Route>> validEdgesDetective(Colour player, int location, int numBus, int numTaxi, int numUnderground)
+    {
+        List<Edge<Integer, Route>> possibleEdges  = londonGraph.getEdges(location);
+        List<Edge<Integer, Route>> validEdges = new ArrayList();
+		for(Edge<Integer, Route> edge : possibleEdges)
+		{
+		    Ticket edgeType = Ticket.fromRoute(edge.data());
+		    if(edgeType == Ticket.valueOf("Bus") && numBus > 0)
+		    {
+		    	validEdges.add(edge);
+		    }
+		    else if(edgeType == Ticket.valueOf("Taxi") && numTaxi > 0)
+		    {
+		    	validEdges.add(edge);
+		    }
+		    else if(edgeType == Ticket.valueOf("Underground") && numUnderground > 0)
+		    {
+		    	validEdges.add(edge);
+		    }
+		}
+		return validEdges;
+    }
+    
+    // returns list of valid edges (that is edges comming from node player is  
+   	//currently located and for which he has tickets for travel) for MrX
+     private List<Edge<Integer, Route>> validEdgesMrX(Colour player, int location, int numSecretMoves)
+     {
+        List<Edge<Integer, Route>> possibleEdges  = londonGraph.getEdges(location);
         List<Edge<Integer, Route>> validEdges = new ArrayList();
         for(Edge<Integer, Route> edge : possibleEdges)
         {
-        	Ticket edgeType = Ticket.fromRoute(edge.data());
-        	if(edgeType == Ticket.valueOf("Bus") && numBus > 0)
-        	{
-        		validEdges.add(edge);
-        	}
-        	else if(edgeType == Ticket.valueOf("Taxi") && numTaxi > 0)
-        	{
-        		validEdges.add(edge);
-        	}
-        	else if(edgeType == Ticket.valueOf("Underground") && numUnderground > 0)
-        	{
-        		validEdges.add(edge);
-        	}
+		   	Ticket edgeType = Ticket.fromRoute(edge.data());
+		   	if(edgeType == Ticket.valueOf("SecretMove") && numSecretMoves > 0)
+		   	{
+		   		validEdges.add(edge);
+		   	}
+		   	else if (edgeType != Ticket.valueOf("SecretMove"))
+		   	{
+		   		validEdges.add(edge);
+		   	}
         }
         return validEdges;
-    }
+     }
 
     @Override
     public void spectate(Spectator spectator) {
