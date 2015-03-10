@@ -46,13 +46,16 @@ public class ScotlandYardModel extends ScotlandYard {
 
 
     @Override
-    protected Move getPlayerMove(Colour colour) {
-        return null;
+    protected Move getPlayerMove(Colour colour) 
+    {
+       int location = colourToLocation.get(colour);
+       Player player = colourToPlayer.get(colour);
+       return player.notify(location, validMoves(colour));
     }
 
     @Override
     protected void nextPlayer() {
-
+		
     }
 
     @Override
