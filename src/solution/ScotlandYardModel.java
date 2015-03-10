@@ -18,6 +18,7 @@ private Map<Colour,Map<Ticket,Integer>> colourToTickets;
 private List<Colour> orderOfPlay; 
 private int numberOfDetectives;
 private final List<Boolean> showRounds; 
+private int currentRound; 
 
     //Class constructor reads and stores graph and game attributes (e.g. num of players, show rounds). 	
     public ScotlandYardModel(int numberOfDetectives, List<Boolean> rounds, String graphFileName) throws IOException{ 
@@ -52,20 +53,21 @@ private final List<Boolean> showRounds;
     protected void nextPlayer() {
 
     }
-
+    //Need to clarify with Michael the meanings of the different play methods. 
     @Override
     protected void play(MoveTicket move) {
-
+	
     }
 
     @Override
     protected void play(MoveDouble move) {
-
+    	// need to see how Michael implemented this to incrememnt currentRound
+	
     }
 
     @Override
     protected void play(MovePass move) {
-
+	//currentRound++;
     }
 
     @Override
@@ -122,28 +124,30 @@ private final List<Boolean> showRounds;
     @Override
     public boolean isReady() {
     	if(orderOfPlay.size() == numberOfDetectives +1 && orderOfPlay.get(0).equals(Colour.Black)) {
+    		currentRound = 0;
+    		currentPlayer = Colour.Black;
     		return true;
     	} else return false;
     }
 
     @Override
     public Colour getCurrentPlayer() {
-        return null;
+        return currentPlayer;
     }
 
     @Override
-    public int getRound() {
-        return 0;
+    public int getRound() { //what if someone asks for the round before the game is ready to start?
+        return currentRound; 
     }
 
     @Override
     public List<Boolean> getRounds() {
-        return null;
+        return showRounds;
     }
 
     //Ensures Black is at the front of the list. 
     private List<Colour> sortColours(List<Colour> colours) {
-	int index = colours.indexOf(Colour.Black); //not sure this the best way to implement? 
+	int index = colours.indexOf(Colour.Black); 
 	if(index != (-1)) {
 		Colour firstColour = colours.get(0);
 		colours.set(0,Colour.Black);
