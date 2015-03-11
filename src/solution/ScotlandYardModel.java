@@ -48,40 +48,68 @@ private final List<Boolean> showRounds;
     @Override
     protected Move getPlayerMove(Colour colour) 
     {
-       int location = colourToLocation.get(colour);
+       /*int location = colourToLocation.get(colour);
        Player player = colourToPlayer.get(colour);
        List<Move> validMoves = validMoves(colour);
-       Move playerMove = player.notify(location, validMoves);
-       if (validMoves.contains(playerMove)) return playerMove;
-       else return playerMove; // what should we do if player retuens bad move ????
+       Move playerMove = player.notify(location, validMoves);*/
+       /*if (validMoves != null && validMoves.contains(playerMove))*/ //return playerMove;
+       //else return playerMove; //what should we do if player retuens bad move ????
+       return new MoveTicket(colour, 45, Ticket.Bus);
     }
 
+    //increments player
     @Override
     protected void nextPlayer() {
+		/*int index = orderOfPlay.indexOf(currentPlayer);
+		int numPlayer = orderOfPlay.size();
+		if(index < numPlayer - 2 )
+		{
+			currentPlayer = orderOfPlay.get(index + 1);
+		}
+		else
+		{
+			currentPlayer = orderOfPlay.get(0);
+		}*/
+    }
 
+    //plays a single move by updating relevent properties
+    @Override
+    protected void play(MoveTicket move)
+    {
+    	/*Colour player = move.colour;
+    	int target = move.target;
+    	Ticket ticket = move.ticket;
+    	colourToLocation.put(player, target);
+    	int numTickets = getPlayerTickets(player, ticket);
+    	colourToTickets.get(player).put(ticket, numTickets - 1);*/
+    }
+
+    //plays a double move by updating relevent properties
+    @Override
+    protected void play(MoveDouble move) 
+    {
+		/*List<Move> moves = move.moves;
+    	MoveTicket firstMove = (MoveTicket) moves.get(0);
+    	MoveTicket secondMove = (MoveTicket) moves.get(1);
+    	Colour player = firstMove.colour;
+    	int numDoubleTickets = getPlayerTickets(player, Ticket.valueOf("DoubleMove"));
+    	colourToTickets.get(player).put(Ticket.valueOf("DoubleMove"), numDoubleTickets - 1);
+    	play(firstMove);
+    	play(secondMove);*/
     }
 
     @Override
-    protected void play(MoveTicket move) {
-
+    protected void play(MovePass move) 
+    {
     }
 
-    @Override
-    protected void play(MoveDouble move) {
-
-    }
-
-    @Override
-    protected void play(MovePass move) {
-
-    }
-
+    //vists all valid moves for given player
     @Override
     protected List<Move> validMoves(Colour player) 
     {
-        int location = colourToLocation.get(player);
+        //int location = colourToLocation.get(player);
         List<Move> makableMoves = new ArrayList();
-        List<MoveTicket> singleMoves = singleMoves(location, player);
+        /*List<MoveTicket> singleMoves = singleMoves(location, player);
         List<MoveDouble> doubleMoves = doubleMoves(player);
         for(MoveTicket move : singleMoves)
         {
@@ -114,22 +142,20 @@ private final List<Boolean> showRounds;
 		    			makableMoves.add(move);
 		    		}
 		    }
-        }
+        }*/
         return makableMoves;
     }
     
+    /*// checks to see if for given double move, the move can be made with
+    // @numSecretTickets
     private boolean enoughTicketsMrX(MoveDouble move, int numSectetTickets)
     {
     	int numDouble = getPlayerTickets(Colour.valueOf("Black"), Ticket.valueOf("DoubleMove"));
     	if(numDouble <= 0) return false;
-    	String[] substrings = move.toString().split(" -> | |: ");
-    	Colour player = Colour.valueOf(substrings[2]);
-    	int m1Target = Integer.parseInt(substrings[3]);
-    	Ticket m1Ticket = Ticket.valueOf(substrings[4]);
-    	int m2Target = Integer.parseInt(substrings[5]);
-    	Ticket m2Ticket = Ticket.valueOf(substrings[6]);
-    	MoveTicket firstMove = new MoveTicket(player, m1Target, m1Ticket);
-    	MoveTicket secondMove = new MoveTicket(player, m2Target, m2Ticket);
+    	List<Move> moves = move.moves;
+    	MoveTicket firstMove = (MoveTicket) moves.get(0);
+    	Ticket m1Ticket = firstMove.ticket;
+    	MoveTicket secondMove = (MoveTicket) moves.get(1);
     	if( !enoughTicketsMrX(firstMove, numSectetTickets) ) return false;
     	if(m1Ticket.equals(Ticket.valueOf("SecretMove"))) numSectetTickets --;
     	if( !enoughTicketsMrX(secondMove, numSectetTickets) ) return false;
@@ -140,8 +166,7 @@ private final List<Boolean> showRounds;
     //enough ticekts to make move
     private boolean enoughTicketsMrX(MoveTicket move, int numSectetTickets)
     {
-    	String[] substrings = move.toString().split(" ");
-    	Ticket ticket = Ticket.valueOf(substrings[2]);
+    	Ticket ticket = move.ticket;
     	if(ticket.equals(Ticket.valueOf("SecretMove")))
     	{
     		if(numSectetTickets > 0) return true;
@@ -154,26 +179,20 @@ private final List<Boolean> showRounds;
     //enough ticekts to make move
     private boolean enoghTicketsDetective(MoveTicket move, int numBus, int numTaxi, int numUnderground)
     {
-    	String[] substrings = move.toString().split(" ");
-    	Ticket ticket = Ticket.valueOf(substrings[2]);
+    	Ticket ticket = move.ticket;
     	if(ticket.equals(Ticket.valueOf("Bus")) && numBus > 0) return true;
 		else if(ticket.equals(Ticket.valueOf("Taxi")) && numTaxi > 0) return true;
 		else if(ticket.equals(Ticket.valueOf("Underground")) && numUnderground > 0) return true;
 		else return false;
     }
     
-    //checks if player (bar player making @move) is at either 2 nodes making 
+    //checks if player (bar player making @move or MrX) is at either 2 nodes making 
     //up double move
     private boolean moveOcupyTest(MoveDouble move)
     {
-    	String[] substrings = move.toString().split(" -> | |: ");
-    	Colour player = Colour.valueOf(substrings[2]);
-    	int m1Target = Integer.parseInt(substrings[3]);
-    	Ticket m1Ticket = Ticket.valueOf(substrings[4]);
-    	int m2Target = Integer.parseInt(substrings[5]);
-    	Ticket m2Ticket = Ticket.valueOf(substrings[6]);
-    	MoveTicket firstMove = new MoveTicket(player, m1Target, m1Ticket);
-    	MoveTicket secondMove = new MoveTicket(player, m2Target, m2Ticket);
+    	List<Move> moves = move.moves;
+    	MoveTicket firstMove = (MoveTicket) moves.get(0);
+    	MoveTicket secondMove = (MoveTicket) moves.get(1);
     	if( !moveOcupyTest(firstMove) && !moveOcupyTest(secondMove) )
     	{
     		return false;
@@ -181,43 +200,44 @@ private final List<Boolean> showRounds;
     	else return true;
     }
     
-    //checks if player (bar player making @move) is at target node
+    //checks if player (bar player making @move or MrX) is at target node
     private boolean moveOcupyTest(MoveTicket move)
     {
-    	String[] substrings = move.toString().split(" ");
-    	int target = Integer.parseInt(substrings[substrings.length - 2]);
-    	String color =  substrings[0];
-    	int currentLocation = colourToLocation.get(Colour.valueOf(color));
+    	int target = move.target;
+    	Colour color = move.colour;
+    	int currentLocation = colourToLocation.get(color);
     	if(currentLocation == target || !ocupy(target) ) return false;
     	else return true;
     }
     
-    //returns true if a player is currently at the given node 
+    //returns true if a player except MrX is currently at the given node 
     private boolean ocupy(int node)
     {
     	for(Colour player : orderOfPlay)
     	{
-    		if(colourToLocation.get(player).equals(node)) return true;
+    		if(colourToLocation.get(player).equals(node))
+    		{
+    			if(player.equals(Colour.valueOf("Black"))) return false;
+    			else return true;
+    		}
     	}
     	return false;
     }
     
-    // returns all posible moves (only double if player is MrX but this is 
-    //only valodation done) for given player at given location
+    //returns all possible double moves
     private List<MoveDouble> doubleMoves(Colour player)
     {
     	int location = colourToLocation.get(player);
     	List<MoveDouble> possibleMoves = new ArrayList();
     	List<MoveTicket> singleMoves = singleMoves(location, player);
-    	if(player == Colour.valueOf("Black"))
+    	if(player.equals(Colour.valueOf("Black")))
     	{
-    		for(MoveTicket fisrtMove : singleMoves)
+    		for(MoveTicket firstMove : singleMoves)
     		{
-    			String[] substrings = fisrtMove.toString().split(" ");
-    			int target = Integer.parseInt(substrings[substrings.length - 2]);
+    			int target = firstMove.target;
     			for(MoveTicket secondMove : singleMoves(target, player))
     			{
-    				possibleMoves.add(new MoveDouble(player, fisrtMove, secondMove));
+    				possibleMoves.add(new MoveDouble(player, firstMove, secondMove));
     			}
     		}
     	}
@@ -242,7 +262,7 @@ private final List<Boolean> showRounds;
     	int target = edge.other(location);
         Ticket moveType =  Ticket.fromRoute(edge.data());
         return new MoveTicket(player, target, moveType);
-    }
+    }*/
 
     @Override
     public void spectate(Spectator spectator) {
@@ -252,15 +272,15 @@ private final List<Boolean> showRounds;
     //Adds a player to the game, storing the player's colour, location and tickets. 
     @Override 
     public boolean join(Player player, Colour colour, int location, Map<Ticket, Integer> tickets) {
-	if(orderOfPlay!=null && orderOfPlay.contains(colour)) return false; //how should we handle false return? 
-    	else {
-	    	orderOfPlay.add(colour);
-	    	sortColours(orderOfPlay);
-	    	colourToPlayer.put(colour,player);
-	    	colourToLocation.put(colour,location);
-	    	colourToTickets.put(colour,tickets);
-   	}
-        return true;
+		/*if(orderOfPlay!=null && orderOfPlay.contains(colour)) return false; //how should we handle false return? 
+			else {
+				orderOfPlay.add(colour);
+				sortColours(orderOfPlay);
+				colourToPlayer.put(colour,player);
+				colourToLocation.put(colour,location);
+				colourToTickets.put(colour,tickets);
+	   	}*/
+		return true;
     }
 
     @Override
@@ -299,7 +319,7 @@ private final List<Boolean> showRounds;
 
     @Override
     public Colour getCurrentPlayer() {
-        return currentPlayer;
+        return Colour.valueOf("Black"); //currentPlayer;
     }
 
     @Override
