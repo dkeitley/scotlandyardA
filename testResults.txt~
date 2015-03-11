@@ -1,0 +1,270 @@
+Buildfile: /home/michael/Documents/scotlandYardA/build.xml
+
+compile:
+
+jar:
+
+compile-tests:
+
+test:
+    [junit] Testsuite: InitialisationTests
+    [junit] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.06 sec
+    [junit] 
+    [junit] Testsuite: RoundsTests
+    [junit] Tests run: 7, Failures: 4, Errors: 1, Skipped: 0, Time elapsed: 0.019 sec
+    [junit] 
+    [junit] Testcase: testAfterTheTurnAfterMrXTheCurrentPlayerIsCorrect(RoundsTests):	FAILED
+    [junit] After the game has been initialised, and mr x has had a go, the getCurrentPlayer() function should return first detective's colour expected:<Blue> but was:<Black>
+    [junit] junit.framework.AssertionFailedError: After the game has been initialised, and mr x has had a go, the getCurrentPlayer() function should return first detective's colour expected:<Blue> but was:<Black>
+    [junit] 	at RoundsTests.testAfterTheTurnAfterMrXTheCurrentPlayerIsCorrect(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testAfterMrXMakesASingleMoveTheRoundShouldHaveIncremenetedByOne(RoundsTests):	FAILED
+    [junit] After Mr X has a go, the round should have incremented by one expected:<1> but was:<0>
+    [junit] junit.framework.AssertionFailedError: After Mr X has a go, the round should have incremented by one expected:<1> but was:<0>
+    [junit] 	at RoundsTests.testAfterMrXMakesASingleMoveTheRoundShouldHaveIncremenetedByOne(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testAfterMrXMakesADoubleMoveTheRoundsShouldHaveIncrementedTwice(RoundsTests):	FAILED
+    [junit] After Mr X plays a double move the round should increment twice expected:<2> but was:<0>
+    [junit] junit.framework.AssertionFailedError: After Mr X plays a double move the round should increment twice expected:<2> but was:<0>
+    [junit] 	at RoundsTests.testAfterMrXMakesADoubleMoveTheRoundsShouldHaveIncrementedTwice(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testTheVisibilityOfTheRoundsShouldCorrespondToTheInputRounds(RoundsTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at RoundsTests.testTheVisibilityOfTheRoundsShouldCorrespondToTheInputRounds(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testAfterFirstMoveOfADoubleMoveRoundsShouldIncrementByOne(RoundsTests):	FAILED
+    [junit] After Mr X plays the first ticket of a double move the round should increment once expected:<1> but was:<0>
+    [junit] junit.framework.AssertionFailedError: After Mr X plays the first ticket of a double move the round should increment once expected:<1> but was:<0>
+    [junit] 	at RoundsTests.testAfterFirstMoveOfADoubleMoveRoundsShouldIncrementByOne(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testsuite: MrXLocationsTests
+    [junit] Tests run: 3, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.008 sec
+    [junit] 
+    [junit] Testcase: testMrXLocationIsZeroIfHeHasNotYetShownHimself(MrXLocationsTests):	FAILED
+    [junit] If Mr X has not yet revealed himself, his last known location should be zero expected:<0> but was:<5>
+    [junit] junit.framework.AssertionFailedError: If Mr X has not yet revealed himself, his last known location should be zero expected:<0> but was:<5>
+    [junit] 	at MrXLocationsTests.testMrXLocationIsZeroIfHeHasNotYetShownHimself(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testMrXLocationIsCorrectAfterDisplayRoundOccursNRoundsIntoTheGame(MrXLocationsTests):	FAILED
+    [junit] If Mr X is due to display himself N rounds into the game, the display data should be accurate at that round expected:<16> but was:<5>
+    [junit] junit.framework.AssertionFailedError: If Mr X is due to display himself N rounds into the game, the display data should be accurate at that round expected:<16> but was:<5>
+    [junit] 	at MrXLocationsTests.testMrXLocationIsCorrectAfterDisplayRoundOccursNRoundsIntoTheGame(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testsuite: DetectiveValidMovesTests
+    [junit] Tests run: 7, Failures: 0, Errors: 6, Skipped: 0, Time elapsed: 0.01 sec
+    [junit] 
+    [junit] Testcase: testMrXInTargetLocationMakesValidRoute(DetectiveValidMovesTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at DetectiveValidMovesTests.testMrXInTargetLocationMakesValidRoute(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testDetectiveHasNoValidMoves(DetectiveValidMovesTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at DetectiveValidMovesTests.testDetectiveHasNoValidMoves(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testMovesNotIncludedIfNotEnoughTickets(DetectiveValidMovesTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at DetectiveValidMovesTests.testMovesNotIncludedIfNotEnoughTickets(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testSameRouteWithDifferentTicketsShouldBeInValidRoutes(DetectiveValidMovesTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at DetectiveValidMovesTests.testSameRouteWithDifferentTicketsShouldBeInValidRoutes(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testDetectiveValidMoves(DetectiveValidMovesTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at DetectiveValidMovesTests.testDetectiveValidMoves(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testDetectiveValidMoves2(DetectiveValidMovesTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at DetectiveValidMovesTests.testDetectiveValidMoves2(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testsuite: MrXValidMovesTests
+    [junit] Tests run: 10, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 0.011 sec
+    [junit] 
+    [junit] Testcase: testMrXMustHaveEnoughTicketsForADoubleMove(MrXValidMovesTests):	FAILED
+    [junit] If Mr X does not have enough tickets to make both of his double moves, the double move should not be in the set of valid moves
+    [junit] junit.framework.AssertionFailedError: If Mr X does not have enough tickets to make both of his double moves, the double move should not be in the set of valid moves
+    [junit] 	at MrXValidMovesTests.testMrXMustHaveEnoughTicketsForADoubleMove(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testMrXValidMoves(MrXValidMovesTests):	FAILED
+    [junit] Mr X Valid tickets should contain Black 4 SecretMove
+    [junit] junit.framework.AssertionFailedError: Mr X Valid tickets should contain Black 4 SecretMove
+    [junit] 	at MrXValidMovesTests.testMrXValidMoves(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testMrXValidMoves2(MrXValidMovesTests):	FAILED
+    [junit] Mr X Valid tickets should not contain tickets that aren't expected Move Double Black: 2 Bus -> 3 Taxi
+    [junit] junit.framework.AssertionFailedError: Mr X Valid tickets should not contain tickets that aren't expected Move Double Black: 2 Bus -> 3 Taxi
+    [junit] 	at MrXValidMovesTests.testMrXValidMoves2(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testsuite: PlayTests
+    [junit] Tests run: 8, Failures: 1, Errors: 3, Skipped: 0, Time elapsed: 0.009 sec
+    [junit] 
+    [junit] Testcase: testInterpretPassShouldMoveTheCurrentPlayerOnByOne(PlayTests):	FAILED
+    [junit] The current player should have moved on after the pass move has been played
+    [junit] junit.framework.AssertionFailedError: The current player should have moved on after the pass move has been played
+    [junit] 	at PlayTests.testInterpretPassShouldMoveTheCurrentPlayerOnByOne(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testDetectiveTicketsGivenToMrX(PlayTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at PlayTests.testDetectiveTicketsGivenToMrX(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testPlayerMovesToTheDesiredLocation(PlayTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at PlayTests.testPlayerMovesToTheDesiredLocation(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testPlayerTicketsDecrementedAfterMove(PlayTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at PlayTests.testPlayerTicketsDecrementedAfterMove(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testsuite: SpectatorTests
+    [junit] Tests run: 5, Failures: 3, Errors: 1, Skipped: 0, Time elapsed: 0.006 sec
+    [junit] 
+    [junit] Testcase: testSpectatorIsNotifiedOfADetectiveMove(SpectatorTests):	FAILED
+    [junit] The spectator should have received a move
+    [junit] junit.framework.AssertionFailedError: The spectator should have received a move
+    [junit] 	at SpectatorTests.testSpectatorIsNotifiedOfADetectiveMove(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testSpectatorIsNotifiedOfAMrXMove(SpectatorTests):	FAILED
+    [junit] The spectator should have received a mr X move
+    [junit] junit.framework.AssertionFailedError: The spectator should have received a mr X move
+    [junit] 	at SpectatorTests.testSpectatorIsNotifiedOfAMrXMove(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testSpectatorIsGivenMrXsLastKnowLocationIfHeIsHidden(SpectatorTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at SpectatorTests.testSpectatorIsGivenMrXsLastKnowLocationIfHeIsHidden(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testSpectatorIsGivenCorrectLocationWhenMrXIsVisible(SpectatorTests):	FAILED
+    [junit] If Mr X is not currently visible, the location in the move should be his last known location expected:<3> but was:<0>
+    [junit] junit.framework.AssertionFailedError: If Mr X is not currently visible, the location in the move should be his last known location expected:<3> but was:<0>
+    [junit] 	at SpectatorTests.testSpectatorIsGivenCorrectLocationWhenMrXIsVisible(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testsuite: PlayerNotifyTests
+    [junit] Tests run: 4, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 0.006 sec
+    [junit] 
+    [junit] Testcase: testMrXLocationNotifyIsCorrectEvenWhenHidden(PlayerNotifyTests):	FAILED
+    [junit] Mr X player should be notified of his actual location, not his last known location
+    [junit] junit.framework.AssertionFailedError: Mr X player should be notified of his actual location, not his last known location
+    [junit] 	at PlayerNotifyTests.testMrXLocationNotifyIsCorrectEvenWhenHidden(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testThecurrentPlayerIsNotifiedOnTheirTurn(PlayerNotifyTests):	FAILED
+    [junit] Player has been notified when it is their turn
+    [junit] junit.framework.AssertionFailedError: Player has been notified when it is their turn
+    [junit] 	at PlayerNotifyTests.testThecurrentPlayerIsNotifiedOnTheirTurn(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testThePlayerIsNotifiedWithTheCorrectLocation(PlayerNotifyTests):	FAILED
+    [junit] The player is notified with their position which is correct expected:<3> but was:<0>
+    [junit] junit.framework.AssertionFailedError: The player is notified with their position which is correct expected:<3> but was:<0>
+    [junit] 	at PlayerNotifyTests.testThePlayerIsNotifiedWithTheCorrectLocation(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testsuite: IsGameOverTests
+    [junit] Tests run: 9, Failures: 5, Errors: 0, Skipped: 0, Time elapsed: 0.019 sec
+    [junit] 
+    [junit] Testcase: testIsGameOverWhenDetectivesAreAllStuck(IsGameOverTests):	FAILED
+    [junit] If the detectives cant move because they are out of tickets the game should be over
+    [junit] junit.framework.AssertionFailedError: If the detectives cant move because they are out of tickets the game should be over
+    [junit] 	at IsGameOverTests.testIsGameOverWhenDetectivesAreAllStuck(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testIsGameOverWhenNumberOfRoundsHasBeenPlayedAndDetectivesHavePlayed(IsGameOverTests):	FAILED
+    [junit] Game should be over after forth move
+    [junit] junit.framework.AssertionFailedError: Game should be over after forth move
+    [junit] 	at IsGameOverTests.testIsGameOverWhenNumberOfRoundsHasBeenPlayedAndDetectivesHavePlayed(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testIsGameOverIfMrXIsCaught(IsGameOverTests):	FAILED
+    [junit] If Mr X has Been landed on, the game should be over
+    [junit] junit.framework.AssertionFailedError: If Mr X has Been landed on, the game should be over
+    [junit] 	at IsGameOverTests.testIsGameOverIfMrXIsCaught(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testIsGameOverIfMrXHasNowhereToMove(IsGameOverTests):	FAILED
+    [junit] If Mr X has nowhere to move he has lost the game
+    [junit] junit.framework.AssertionFailedError: If Mr X has nowhere to move he has lost the game
+    [junit] 	at IsGameOverTests.testIsGameOverIfMrXHasNowhereToMove(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testGameIsOverWithOnlyOnePlayer(IsGameOverTests):	FAILED
+    [junit] If there is only Mr X in the game, the game should be over
+    [junit] junit.framework.AssertionFailedError: If there is only Mr X in the game, the game should be over
+    [junit] 	at IsGameOverTests.testGameIsOverWithOnlyOnePlayer(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testsuite: GetWinningPlayersTests
+    [junit] Tests run: 6, Failures: 0, Errors: 6, Skipped: 0, Time elapsed: 0.011 sec
+    [junit] 
+    [junit] Testcase: testIfMrXWonOnlyHisColourShouldBeReturned(GetWinningPlayersTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at GetWinningPlayersTests.testIfMrXWonOnlyHisColourShouldBeReturned(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testIfDetectivesWonAllTheirColoursAreReturned(GetWinningPlayersTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at GetWinningPlayersTests.testIfDetectivesWonAllTheirColoursAreReturned(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testIfMrXWonHisColourShouldBeReturned(GetWinningPlayersTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at GetWinningPlayersTests.testIfMrXWonHisColourShouldBeReturned(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testIfGameIsNotOverEmptyListIsReturned(GetWinningPlayersTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at GetWinningPlayersTests.testIfGameIsNotOverEmptyListIsReturned(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testIfGameIsOverNonEmptyListIsReturned(GetWinningPlayersTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at GetWinningPlayersTests.testIfGameIsOverNonEmptyListIsReturned(Unknown Source)
+    [junit] 
+    [junit] 
+    [junit] Testcase: testIfDetectivesWonMrXColourIsNotReturned(GetWinningPlayersTests):	Caused an ERROR
+    [junit] null
+    [junit] java.lang.NullPointerException
+    [junit] 	at GetWinningPlayersTests.testIfDetectivesWonMrXColourIsNotReturned(Unknown Source)
+    [junit] 
+    [junit] 
+
+BUILD SUCCESSFUL
+Total time: 0 seconds
