@@ -18,6 +18,8 @@ public class ScotlandYardModel extends ScotlandYard {
 	private List<Colour> orderOfPlay; 
 	private int numberOfDetectives;
 	private final List<Boolean> showRounds; 
+	private int currentRound; 
+	private List<Spectator> spectators;
 
     //test function 
     private void playerState(Colour player)
@@ -56,8 +58,10 @@ public class ScotlandYardModel extends ScotlandYard {
 		colourToPlayer = new HashMap<Colour,Player>();
 		colourToTickets = new HashMap<Colour,Map<Ticket,Integer>>();
 		colourToLocation = new HashMap<Colour, Integer>();
+		spectators = new ArrayList<Spectator>();
 		
 		currentPlayer = Colour.valueOf("Black");
+		currentRound = 0;
     }
 
 	//asks a player for a move giving it the valid moves it can make 
@@ -94,6 +98,12 @@ public class ScotlandYardModel extends ScotlandYard {
     	if(!player.equals(Colour.Black))
     	{
     		putPlayerTickets(Colour.Black, ticket , 1);
+    		
+    	} else {
+		currentRound++;
+		for(Spectator s:spectators) {
+			s.notify(move); //dispatch issue?
+		}
     	}
     }
 
@@ -101,7 +111,10 @@ public class ScotlandYardModel extends ScotlandYard {
     @Override
     protected void play(MoveDouble move) 
     {
-		List<Move> moves = move.moves;
+    	for(Spectator s: spectators) {
+		s.notify(move);
+    	}
+	List<Move> moves = move.moves;
     	MoveTicket firstMove = (MoveTicket) moves.get(0);
     	MoveTicket secondMove = (MoveTicket) moves.get(1);
     	Colour player = firstMove.colour;
@@ -270,7 +283,7 @@ public class ScotlandYardModel extends ScotlandYard {
 
     @Override
     public void spectate(Spectator spectator) {
-
+	spectators.add(spectator);
     }
 
     //Adds a player to the game, storing the player's colour, location and tickets. 
@@ -337,12 +350,12 @@ public class ScotlandYardModel extends ScotlandYard {
 
     @Override
     public int getRound() {
-        return 0;
+        return currentRound;
     }
 
     @Override
     public List<Boolean> getRounds() {
-        return null;
+        return showRounds;
     }
 
     //Ensures Black is at the front of the list. 
