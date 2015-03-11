@@ -48,54 +48,47 @@ private final List<Boolean> showRounds;
     @Override
     protected Move getPlayerMove(Colour colour) 
     {
-       /*int location = colourToLocation.get(colour);
-       Player player = colourToPlayer.get(colour);
-       List<Move> validMoves = validMoves(colour);
-       Move playerMove = player.notify(location, validMoves);*/
-       /*if (validMoves != null && validMoves.contains(playerMove))*/ //return playerMove;
-       //else return playerMove; //what should we do if player retuens bad move ????
-       return new MoveTicket(colour, 45, Ticket.Bus);
+       // wrong - valid moves and not checked what player has resturned to us
+        int location = colourToLocation.get(colour);
+        List<Move> moves = validMoves(colour);
+        Player player = colourToPlayer.get(colour);
+        Move returnMove = player.notify(location, moves);
+        return returnMove;
     }
 
     //increments player
     @Override
     protected void nextPlayer() {
-		/*int index = orderOfPlay.indexOf(currentPlayer);
-		int numPlayer = orderOfPlay.size();
-		if(index < numPlayer - 2 )
-		{
-			currentPlayer = orderOfPlay.get(index + 1);
-		}
-		else
-		{
-			currentPlayer = orderOfPlay.get(0);
-		}*/
+		int index = orderOfPlay.indexOf(currentPlayer);
+		int size = orderOfPlay.size();
+		if(index == size - 1) currentPlayer = orderOfPlay.get(0);
+		else  currentPlayer = orderOfPlay.get(index + 1);
     }
 
     //plays a single move by updating relevent properties
     @Override
     protected void play(MoveTicket move)
     {
-    	/*Colour player = move.colour;
+    	Colour player = move.colour;
     	int target = move.target;
     	Ticket ticket = move.ticket;
     	colourToLocation.put(player, target);
     	int numTickets = getPlayerTickets(player, ticket);
-    	colourToTickets.get(player).put(ticket, numTickets - 1);*/
+    	colourToTickets.get(player).put(ticket, numTickets - 1);
     }
 
     //plays a double move by updating relevent properties
     @Override
     protected void play(MoveDouble move) 
     {
-		/*List<Move> moves = move.moves;
+		List<Move> moves = move.moves;
     	MoveTicket firstMove = (MoveTicket) moves.get(0);
     	MoveTicket secondMove = (MoveTicket) moves.get(1);
     	Colour player = firstMove.colour;
     	int numDoubleTickets = getPlayerTickets(player, Ticket.valueOf("DoubleMove"));
     	colourToTickets.get(player).put(Ticket.valueOf("DoubleMove"), numDoubleTickets - 1);
     	play(firstMove);
-    	play(secondMove);*/
+    	play(secondMove);
     }
 
     @Override
@@ -107,9 +100,9 @@ private final List<Boolean> showRounds;
     @Override
     protected List<Move> validMoves(Colour player) 
     {
-        //int location = colourToLocation.get(player);
+        int location = colourToLocation.get(player);
         List<Move> makableMoves = new ArrayList();
-        /*List<MoveTicket> singleMoves = singleMoves(location, player);
+        List<MoveTicket> singleMoves = singleMoves(location, player);
         List<MoveDouble> doubleMoves = doubleMoves(player);
         for(MoveTicket move : singleMoves)
         {
@@ -142,11 +135,12 @@ private final List<Boolean> showRounds;
 		    			makableMoves.add(move);
 		    		}
 		    }
-        }*/
+        }
+        if (makableMoves.size() == 0) makableMoves.add(new MovePass(player));
         return makableMoves;
     }
     
-    /*// checks to see if for given double move, the move can be made with
+    // checks to see if for given double move, the move can be made with
     // @numSecretTickets
     private boolean enoughTicketsMrX(MoveDouble move, int numSectetTickets)
     {
@@ -262,7 +256,7 @@ private final List<Boolean> showRounds;
     	int target = edge.other(location);
         Ticket moveType =  Ticket.fromRoute(edge.data());
         return new MoveTicket(player, target, moveType);
-    }*/
+    }
 
     @Override
     public void spectate(Spectator spectator) {
@@ -272,14 +266,14 @@ private final List<Boolean> showRounds;
     //Adds a player to the game, storing the player's colour, location and tickets. 
     @Override 
     public boolean join(Player player, Colour colour, int location, Map<Ticket, Integer> tickets) {
-		/*if(orderOfPlay!=null && orderOfPlay.contains(colour)) return false; //how should we handle false return? 
+		if(orderOfPlay!=null && orderOfPlay.contains(colour)) return false; //how should we handle false return? 
 			else {
 				orderOfPlay.add(colour);
 				sortColours(orderOfPlay);
 				colourToPlayer.put(colour,player);
 				colourToLocation.put(colour,location);
 				colourToTickets.put(colour,tickets);
-	   	}*/
+	   	}
 		return true;
     }
 
@@ -319,7 +313,7 @@ private final List<Boolean> showRounds;
 
     @Override
     public Colour getCurrentPlayer() {
-        return Colour.valueOf("Black"); //currentPlayer;
+        return currentPlayer; //currentPlayer;
     }
 
     @Override
