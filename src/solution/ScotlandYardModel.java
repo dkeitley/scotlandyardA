@@ -20,6 +20,7 @@ public class ScotlandYardModel extends ScotlandYard {
 	private final List<Boolean> showRounds; 
 	private int currentRound; 
 	private List<Spectator> spectators;
+	private int lastKnownLocation;
 
     //test function 
     private void playerState(Colour player)
@@ -62,6 +63,8 @@ public class ScotlandYardModel extends ScotlandYard {
 		
 		currentPlayer = Colour.valueOf("Black");
 		currentRound = 0;
+
+		
     }
 
 	//asks a player for a move giving it the valid moves it can make 
@@ -100,11 +103,15 @@ public class ScotlandYardModel extends ScotlandYard {
     		putPlayerTickets(Colour.Black, ticket , 1);
     		
     	} else {
+    		if(showRounds.get(currentRound+1) == true) {
+			lastKnownLocation = target; //what if Mr X hasn't show himself yet?
+    		} 
 		currentRound++;
-		for(Spectator s:spectators) {
-			s.notify(move); //dispatch issue?
-		}
+		
     	}
+    	for(Spectator s:spectators) {
+		s.notify(move); 
+	}
     }
 
     //plays a double move by calling play on two moveTickets
@@ -295,6 +302,7 @@ public class ScotlandYardModel extends ScotlandYard {
 				sortColours(orderOfPlay);
 				colourToPlayer.put(colour,player);
 				colourToLocation.put(colour,location);
+				if(showRounds.get(0) == true && colour.equals(Colour.Black)) lastKnownLocation = location;
 				colourToTickets.put(colour,tickets);
 	   	}
 		return true;
@@ -312,7 +320,8 @@ public class ScotlandYardModel extends ScotlandYard {
 
     @Override
     public int getPlayerLocation(Colour colour) {
-    	return colourToLocation.get(colour);
+    	if(colour.equals(Colour.Black)) return lastKnownLocation;
+    	else return colourToLocation.get(colour);
     }
 
     @Override
