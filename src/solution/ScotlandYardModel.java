@@ -21,6 +21,9 @@ public class ScotlandYardModel extends ScotlandYard {
 	private int currentRound; 
 	private List<Spectator> spectators;
 	private int lastKnownLocation;
+	//so part way through a trun a game can't end - all internal refrences to 
+	//checking if a game is over should refer to this not the function
+	private Boolean isGameOver;
 
     //test function 
     private void playerState(Colour player)
@@ -64,6 +67,7 @@ public class ScotlandYardModel extends ScotlandYard {
 		currentPlayer = Colour.valueOf("Black");
 		currentRound = 0;
 		lastKnownLocation = 0;
+		isGameOver = false;
     }
 
     //asks a player for a move giving it the valid moves it can make 
@@ -175,12 +179,26 @@ public class ScotlandYardModel extends ScotlandYard {
     	return;
     }
 
-    //gets valid moves for player using singleMoves() and doubleMoves() and
-    //checks they are valid using enoughTickets() and moveOcupyTest()
+    // checks if players are stuck or game is over and returns pass moves or
+    // empty lists as appropriate
     @Override
     protected List<Move> validMoves(Colour player) 
     {
-        int location = colourToLocation.get(player);
+        List<Move> makableMoves = makableMoves(player);
+        if(isGameOver) makableMoves.add(new MovePass(player));
+        else if(makableMoves.size() == 0 && !player.equals(Colour.Black)) 
+        {
+        	makableMoves.add(new MovePass(player));
+        }
+        return makableMoves;
+    }
+    
+   	//gets moves for player using singleMoves() and doubleMoves() and
+    //checks they are valid using enoughTickets() and moveOcupyTest()
+    // Does not include pass moves
+    protected List<Move> makableMoves(Colour player)
+    {
+    	int location = colourToLocation.get(player);
         List<Move> makableMoves = new ArrayList();
         List<MoveTicket> singleMoves = singleMoves(location, player);
         List<MoveDouble> doubleMoves = doubleMoves(player);
@@ -204,7 +222,6 @@ public class ScotlandYardModel extends ScotlandYard {
 				makableMoves.add(move);
 			}
 		}
-        if (makableMoves.size() == 0 && !player.equals(Colour.Black)) makableMoves.add(new MovePass(player));
         return makableMoves;
     }
     
@@ -375,18 +392,40 @@ public class ScotlandYardModel extends ScotlandYard {
     	ticketMap.put(ticket, numTickets + number);
     	colourToTickets.put(colour, ticketMap);
     }
-
+	
+	//checks if game is over
     @Override
-    public boolean isGameOver() {
-        return false;
+    public boolean isGameOver()
+    {
+       	if(!isReady()) return isGameOver = false;
+        if (makableMoves(Colour.Black).size() == 0) return isGameOver = true;
+        int mrxLocation = colourToLocation.get(Colour.Black);
+        Boolean allDetectivesStuck = true; 
+        for(Colour player : orderOfPlay)
+        {
+        	if(!player.equals(Colour.Black))
+        	{
+        		int playerLocation = colourToLocation.get(player); 
+        		if(playerLocation == mrxLocation) return isGameOver = true;
+        		if(makableMoves(player).size() > 0) allDetectivesStuck = false;
+        	}
+        }
+        if(allDetectivesStuck) return isGameOver = true;
+        if(currentRound == showRounds.size() -1 && currentPlayer.equals(Colour.Black))
+        {
+        	return isGameOver = true;
+        }
+        return isGameOver = false;
     }
 
     //Checks whether enough players have been added and that black is to start. 
     @Override
     public boolean isReady() {
-    	if(orderOfPlay.size() == numberOfDetectives +1 && orderOfPlay.get(0).equals(Colour.Black)) {
+    	if(orderOfPlay.size() == numberOfDetectives +1 && orderOfPlay.get(0).equals(Colour.Black))
+    	{
     		return true;
-    	} else return false;
+    	} 
+    	else return false;
     }
 
     @Override
