@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.*;
 
 public class ScotlandYardModel extends ScotlandYard {
-
+	//Do we have too many fields?
 	private final Graph<Integer,Route> londonGraph;
 	private Colour currentPlayer;
 	private final Map<Colour,Player> colourToPlayer;
@@ -21,6 +21,7 @@ public class ScotlandYardModel extends ScotlandYard {
 	private int currentRound; 
 	private List<Spectator> spectators;
 	private int lastKnownLocation;
+	private MoveTicket lastKnownMove;
 
     //test function 
     private void playerState(Colour player)
@@ -63,11 +64,10 @@ public class ScotlandYardModel extends ScotlandYard {
 		
 		currentPlayer = Colour.valueOf("Black");
 		currentRound = 0;
-
-		
+		lastKnownMove = new MoveTicket(Colour.Black, 0, Ticket.Taxi); //is this the correct way to implement? Ask TA.  
     }
 
-	//asks a player for a move giving it the valid moves it can make 
+    //asks a player for a move giving it the valid moves it can make 
     @Override
     protected Move getPlayerMove(Colour colour) 
     {
@@ -101,17 +101,22 @@ public class ScotlandYardModel extends ScotlandYard {
     	if(!player.equals(Colour.Black))
     	{
     		putPlayerTickets(Colour.Black, ticket , 1);
+    		for(Spectator s:spectators) {
+			s.notify(move); 
+		}
     		
     	} else {
-    		if(showRounds.get(currentRound+1) == true) {
-			lastKnownLocation = target; //what if Mr X hasn't show himself yet?
+    		if(showRounds.get(currentRound+1) == true) { //need to check +1 is correct, although is passing tests. 
+			lastKnownLocation = target;
+			lastKnownMove = move;
     		} 
 		currentRound++;
+		for(Spectator s:spectators) {
+			s.notify(lastKnownMove); 
+		}
 		
     	}
-    	for(Spectator s:spectators) {
-		s.notify(move); 
-	}
+    	
     }
 
     //plays a double move by calling play on two moveTickets
@@ -130,11 +135,14 @@ public class ScotlandYardModel extends ScotlandYard {
     	play(secondMove);
     }
 
-    //as the moves has been passed nothing should be updated so function
-    // is 'blank'
+    //notifies spectators that a pass move has been made
     @Override
     protected void play(MovePass move) 
     {
+    	for(Spectator s:spectators) {
+		s.notify(move); 
+	}
+    	
     	return;
     }
 
@@ -148,16 +156,16 @@ public class ScotlandYardModel extends ScotlandYard {
         List<MoveTicket> singleMoves = singleMoves(location, player);
         List<MoveDouble> doubleMoves = doubleMoves(player);
         int numBus = getPlayerTickets(player, Ticket.valueOf("Bus"));
-		int numTaxi = getPlayerTickets(player, Ticket.valueOf("Taxi"));
-		int numUnderground = getPlayerTickets(player, Ticket.valueOf("Underground"));
-		int numSecret;
-		if(player.equals(Colour.Black)) numSecret = getPlayerTickets(Colour.valueOf("Black"), Ticket.valueOf("SecretMove"));
-		else numSecret = 0;
+	int numTaxi = getPlayerTickets(player, Ticket.valueOf("Taxi"));
+	int numUnderground = getPlayerTickets(player, Ticket.valueOf("Underground"));
+	int numSecret;
+	if(player.equals(Colour.Black)) numSecret = getPlayerTickets(Colour.valueOf("Black"), Ticket.valueOf("SecretMove"));
+	else numSecret = 0;
         for(MoveTicket move : singleMoves)
         {
         	if( enoughTickets(move, numSecret, numBus, numTaxi, numUnderground) && !moveOcupyTest(move) )
         	{
-        		makableMoves.add(move);
+        	    makableMoves.add(move);
         	}
         }
 		    for(MoveDouble move : doubleMoves)
@@ -354,7 +362,7 @@ public class ScotlandYardModel extends ScotlandYard {
 
     @Override
     public Colour getCurrentPlayer() {
-        return currentPlayer; //currentPlayer;
+        return currentPlayer; 
     }
 
     @Override
