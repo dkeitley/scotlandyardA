@@ -64,7 +64,7 @@ public class ScotlandYardModel extends ScotlandYard {
 		
 		currentPlayer = Colour.valueOf("Black");
 		currentRound = 0;
-		lastKnownMove = new MoveTicket(Colour.Black, 0, Ticket.Taxi); //is this the correct way to implement? Ask TA.  
+		lastKnownLocation = 0;
     }
 
     //asks a player for a move giving it the valid moves it can make 
@@ -82,10 +82,10 @@ public class ScotlandYardModel extends ScotlandYard {
     //sets next player, according to orderOfPlay, to currentPlayer 
     @Override
     protected void nextPlayer() {
-		int index = orderOfPlay.indexOf(currentPlayer);
-		int size = orderOfPlay.size();
-		if(index == size - 1) currentPlayer = orderOfPlay.get(0);
-		else  currentPlayer = orderOfPlay.get(index + 1);
+	int index = orderOfPlay.indexOf(currentPlayer);
+	int size = orderOfPlay.size();
+	if(index == size - 1) currentPlayer = orderOfPlay.get(0);
+	else  currentPlayer = orderOfPlay.get(index + 1);
     }
 
     //plays a single move by moving the relevent player and adjusting MrX's
@@ -100,37 +100,48 @@ public class ScotlandYardModel extends ScotlandYard {
     	putPlayerTickets(player, ticket , -1);
     	if(!player.equals(Colour.Black))
     	{
-    		putPlayerTickets(Colour.Black, ticket , 1);
-    		for(Spectator s:spectators) {
-			s.notify(move); 
-		}
-    		
-    	} else {
-    		if(showRounds.get(currentRound+1) == true) { //need to check +1 is correct, although is passing tests. 
-			lastKnownLocation = target;
-			lastKnownMove = move;
-    		} 
-		currentRound++;
-		for(Spectator s:spectators) {
-			s.notify(lastKnownMove); 
-		}
-		
+    		putPlayerTickets(Colour.Black, ticket , 1);	
+    	} 
+    	updateSpectators(player, move);
+    	currentRound++;
+    }
+
+    //notifies spectators that colour has made move (incl. Mr X)
+    private void updateSpectators(Colour colour, MoveTicket move) {
+	if(colour.equals(Colour.Black))
+    	{
+    		if(showRounds.get(currentRound+1) == true) // is +1 right???
+    		{ 
+			lastKnownLocation = move.target;
+			int target = move.target;
+    		}
+    		else
+    		{
+			int target = lastKnownLocation;
+    		}
     	}
-    	
+    	else 
+    	{
+		target = move.target;
+    	}
+    		for(Spectator s:spectators) 
+    		{
+			s.notify(new Move(colour, target, move.route)); 
+		}
     }
 
     //plays a double move by calling play on two moveTickets
     @Override
     protected void play(MoveDouble move) 
     {
-    	for(Spectator s: spectators) {
-		s.notify(move);
-    	}
 	List<Move> moves = move.moves;
     	MoveTicket firstMove = (MoveTicket) moves.get(0);
     	MoveTicket secondMove = (MoveTicket) moves.get(1);
     	Colour player = firstMove.colour;
     	putPlayerTickets(player, Ticket.DoubleMove , -1);
+    	for(Spectator s: spectators) {
+		s.notify(move);
+    	}
     	play(firstMove);
     	play(secondMove);
     }
