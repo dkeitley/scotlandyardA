@@ -21,7 +21,6 @@ public class ScotlandYardModel extends ScotlandYard {
 	private int currentRound; 
 	private List<Spectator> spectators;
 	private int lastKnownLocation;
-	private MoveTicket lastKnownMove;
 
     //test function 
     private void playerState(Colour player)
@@ -98,35 +97,52 @@ public class ScotlandYardModel extends ScotlandYard {
     	Ticket ticket = move.ticket;
     	colourToLocation.put(player, target);
     	putPlayerTickets(player, ticket , -1);
-    	if(!player.equals(Colour.Black))
+    	if(player.equals(Colour.Black))
+    	{
+    		currentRound++;
+    	}
+    	else
     	{
     		putPlayerTickets(Colour.Black, ticket , 1);	
-    	} 
+    	}
     	updateSpectators(player, move);
-    	currentRound++;
     }
-
-    //notifies spectators that colour has made move (incl. Mr X)
-    private void updateSpectators(Colour colour, MoveTicket move) {
-	if(colour.equals(Colour.Black))
+	
+	//returns correct move to notifty players with based on roundNum
+    private MoveTicket buildNotifyMove(MoveTicket move, int roundNum)
+    {
+    	Colour colour = move.colour;
+    	int target;
+    	if(colour.equals(Colour.Black))
     	{
-    		if(showRounds.get(currentRound+1) == true) // is +1 right???
-    		{ 
-			lastKnownLocation = move.target;
-			int target = move.target;
+    		if(showRounds.get(roundNum) == true) // is +1 right???
+    		{
+				target = move.target;
     		}
     		else
     		{
-			int target = lastKnownLocation;
+				target = lastKnownLocation;
     		}
     	}
     	else 
     	{
-		target = move.target;
+			target = move.target;
     	}
-    		for(Spectator s:spectators) 
-    		{
-			s.notify(new Move(colour, target, move.route)); 
+    	return new MoveTicket(colour, target, move.ticket);
+    }
+    
+    //notifies spectators that colour has made move (incl. Mr X) & updates
+    //last known location for mrX
+    private void updateSpectators(Colour colour, MoveTicket move) 
+    {
+		MoveTicket notifyMove = buildNotifyMove(move, currentRound);
+    	if(showRounds.get(currentRound) == true && colour.equals(Colour.Black)) // is +1 right???
+    	{
+			lastKnownLocation = move.target;
+    	}
+    	for(Spectator s:spectators) 
+    	{
+			s.notify(notifyMove); 
 		}
     }
 
@@ -134,13 +150,16 @@ public class ScotlandYardModel extends ScotlandYard {
     @Override
     protected void play(MoveDouble move) 
     {
-	List<Move> moves = move.moves;
+		List<Move> moves = move.moves;
     	MoveTicket firstMove = (MoveTicket) moves.get(0);
     	MoveTicket secondMove = (MoveTicket) moves.get(1);
     	Colour player = firstMove.colour;
     	putPlayerTickets(player, Ticket.DoubleMove , -1);
-    	for(Spectator s: spectators) {
-		s.notify(move);
+    	MoveTicket notifyMove1 = buildNotifyMove(firstMove, currentRound);
+    	MoveTicket notifyMove2 = buildNotifyMove(secondMove, currentRound + 1);
+    	for(Spectator s: spectators) 
+    	{
+			s.notify(new MoveDouble(player, notifyMove1, notifyMove2));
     	}
     	play(firstMove);
     	play(secondMove);
@@ -151,9 +170,8 @@ public class ScotlandYardModel extends ScotlandYard {
     protected void play(MovePass move) 
     {
     	for(Spectator s:spectators) {
-		s.notify(move); 
-	}
-    	
+			s.notify(move); 
+		}
     	return;
     }
 
@@ -167,11 +185,11 @@ public class ScotlandYardModel extends ScotlandYard {
         List<MoveTicket> singleMoves = singleMoves(location, player);
         List<MoveDouble> doubleMoves = doubleMoves(player);
         int numBus = getPlayerTickets(player, Ticket.valueOf("Bus"));
-	int numTaxi = getPlayerTickets(player, Ticket.valueOf("Taxi"));
-	int numUnderground = getPlayerTickets(player, Ticket.valueOf("Underground"));
-	int numSecret;
-	if(player.equals(Colour.Black)) numSecret = getPlayerTickets(Colour.valueOf("Black"), Ticket.valueOf("SecretMove"));
-	else numSecret = 0;
+		int numTaxi = getPlayerTickets(player, Ticket.valueOf("Taxi"));
+		int numUnderground = getPlayerTickets(player, Ticket.valueOf("Underground"));
+		int numSecret;
+		if(player.equals(Colour.Black)) numSecret = getPlayerTickets(Colour.valueOf("Black"), Ticket.valueOf("SecretMove"));
+		else numSecret = 0;
         for(MoveTicket move : singleMoves)
         {
         	if( enoughTickets(move, numSecret, numBus, numTaxi, numUnderground) && !moveOcupyTest(move) )
@@ -179,13 +197,13 @@ public class ScotlandYardModel extends ScotlandYard {
         	    makableMoves.add(move);
         	}
         }
-		    for(MoveDouble move : doubleMoves)
-		    {
-		    	if( enoughTickets(move, numSecret, numBus, numTaxi, numUnderground) && !moveOcupyTest(move) )
-		    	{
-		    		makableMoves.add(move);
-		    	}
-		    }
+		for(MoveDouble move : doubleMoves)
+		{
+			if( enoughTickets(move, numSecret, numBus, numTaxi, numUnderground) && !moveOcupyTest(move) )
+			{
+				makableMoves.add(move);
+			}
+		}
         if (makableMoves.size() == 0 && !player.equals(Colour.Black)) makableMoves.add(new MovePass(player));
         return makableMoves;
     }
