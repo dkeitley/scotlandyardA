@@ -120,11 +120,10 @@ public class ScotlandYardModel extends ScotlandYard {
     	MoveTicket secondMove = (MoveTicket) moves.get(1);
     	Colour player = firstMove.colour;
     	putPlayerTickets(player, Ticket.DoubleMove , -1);
-    	MoveTicket notifyMove1 = buildNotifyMove(firstMove, currentRound + 1);
-    	MoveTicket notifyMove2 = buildNotifyMove(secondMove, currentRound + 2);
+    	MoveTicket notifyMove = new MoveTicket(player, 0, Ticket.DoubleMove);
     	for(Spectator s: spectators) 
     	{
-			s.notify(new MoveDouble(player, notifyMove1, notifyMove2));
+			s.notify(new MoveDouble(player, notifyMove, notifyMove));
     	}
     	play(firstMove);
     	play(secondMove);
