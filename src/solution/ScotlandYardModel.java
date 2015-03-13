@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.*;
 
 public class ScotlandYardModel extends ScotlandYard {
-	//Do we have too many fields?
 	private final Graph<Integer,Route> londonGraph;
 	private Colour currentPlayer;
 	private final Map<Colour,Player> colourToPlayer;
@@ -44,26 +43,24 @@ public class ScotlandYardModel extends ScotlandYard {
     //Class constructor reads and stores graph and game attributes (e.g. num of players, show rounds). 	
     public ScotlandYardModel(int numberOfDetectives, List<Boolean> rounds, String graphFileName) throws IOException{ 
         super(numberOfDetectives, rounds, graphFileName); // ask TA
-        
 		ScotlandYardGraphReader reader = new ScotlandYardGraphReader();
 		Graph<Integer,Route> graph = null;
-		try {
+		try 
+		{
 			graph = reader.readGraph(graphFileName);
-			
-		} catch(Exception e) {
+		} 
+		catch(Exception e) 
+		{
 			System.err.println(e.getMessage());
-			
 		}
 		londonGraph = graph;
 		this.numberOfDetectives = numberOfDetectives;
 		showRounds = rounds;
-		
 		orderOfPlay = new ArrayList<Colour>();		
 		colourToPlayer = new HashMap<Colour,Player>();
 		colourToTickets = new HashMap<Colour,Map<Ticket,Integer>>();
 		colourToLocation = new HashMap<Colour, Integer>();
 		spectators = new ArrayList<Spectator>();
-		
 		currentPlayer = Colour.valueOf("Black");
 		currentRound = 0;
 		lastKnownLocation = 0;
@@ -84,15 +81,17 @@ public class ScotlandYardModel extends ScotlandYard {
 
     //sets next player, according to orderOfPlay, to currentPlayer 
     @Override
-    protected void nextPlayer() {
-	int index = orderOfPlay.indexOf(currentPlayer);
-	int size = orderOfPlay.size();
-	if(index == size - 1) currentPlayer = orderOfPlay.get(0);
-	else  currentPlayer = orderOfPlay.get(index + 1);
+    protected void nextPlayer() 
+    {
+		int index = orderOfPlay.indexOf(currentPlayer);
+		int size = orderOfPlay.size();
+		if(index == size - 1) currentPlayer = orderOfPlay.get(0);
+		else  currentPlayer = orderOfPlay.get(index + 1);
     }
 
     //plays a single move by moving the relevent player and adjusting MrX's
-    // and the player who has just moved tickets
+    // and the player who has just moved tickets. Also increments round when
+    //required and updates spectators
     @Override
     protected void play(MoveTicket move)
     {
@@ -111,6 +110,36 @@ public class ScotlandYardModel extends ScotlandYard {
     	}
     	updateSpectators(player, move);
     }
+    
+    //plays a double move by calling play on two moveTickets
+    @Override
+    protected void play(MoveDouble move) 
+    {
+		List<Move> moves = move.moves;
+    	MoveTicket firstMove = (MoveTicket) moves.get(0);
+    	MoveTicket secondMove = (MoveTicket) moves.get(1);
+    	Colour player = firstMove.colour;
+    	putPlayerTickets(player, Ticket.DoubleMove , -1);
+    	MoveTicket notifyMove1 = buildNotifyMove(firstMove, currentRound + 1);
+    	MoveTicket notifyMove2 = buildNotifyMove(secondMove, currentRound + 2);
+    	for(Spectator s: spectators) 
+    	{
+			s.notify(new MoveDouble(player, notifyMove1, notifyMove2));
+    	}
+    	play(firstMove);
+    	play(secondMove);
+    }
+
+    //notifies spectators that a pass move has been made
+    @Override
+    protected void play(MovePass move) 
+    {
+    	for(Spectator s:spectators)
+    	{
+			s.notify(move); 
+		}
+    	return;
+    }
 	
 	//returns correct move to notifty players with based on roundNum
     private MoveTicket buildNotifyMove(MoveTicket move, int roundNum)
@@ -119,7 +148,7 @@ public class ScotlandYardModel extends ScotlandYard {
     	int target;
     	if(colour.equals(Colour.Black))
     	{
-    		if(showRounds.get(roundNum) == true) // is +1 right???
+    		if(showRounds.get(roundNum) == true)
     		{
 				target = move.target;
     		}
@@ -140,7 +169,7 @@ public class ScotlandYardModel extends ScotlandYard {
     private void updateSpectators(Colour colour, MoveTicket move) 
     {
 		MoveTicket notifyMove = buildNotifyMove(move, currentRound);
-    	if(showRounds.get(currentRound) == true && colour.equals(Colour.Black)) // is +1 right???
+    	if(showRounds.get(currentRound) == true && colour.equals(Colour.Black))
     	{
 			lastKnownLocation = move.target;
     	}
@@ -150,43 +179,15 @@ public class ScotlandYardModel extends ScotlandYard {
 		}
     }
 
-    //plays a double move by calling play on two moveTickets
-    @Override
-    protected void play(MoveDouble move) 
-    {
-		List<Move> moves = move.moves;
-    	MoveTicket firstMove = (MoveTicket) moves.get(0);
-    	MoveTicket secondMove = (MoveTicket) moves.get(1);
-    	Colour player = firstMove.colour;
-    	putPlayerTickets(player, Ticket.DoubleMove , -1);
-    	MoveTicket notifyMove1 = buildNotifyMove(firstMove, currentRound);
-    	MoveTicket notifyMove2 = buildNotifyMove(secondMove, currentRound + 1);
-    	for(Spectator s: spectators) 
-    	{
-			s.notify(new MoveDouble(player, notifyMove1, notifyMove2));
-    	}
-    	play(firstMove);
-    	play(secondMove);
-    }
-
-    //notifies spectators that a pass move has been made
-    @Override
-    protected void play(MovePass move) 
-    {
-    	for(Spectator s:spectators) {
-			s.notify(move); 
-		}
-    	return;
-    }
-
     // checks if players are stuck or game is over and returns pass moves or
-    // empty lists as appropriate
+    // empty lists as appropriate as well as updating spectators
     @Override
     protected List<Move> validMoves(Colour player) 
     {
-        List<Move> makableMoves = makableMoves(player);
+        List<Move> makableMoves = new ArrayList();
         if(isGameOver) makableMoves.add(new MovePass(player));
-        else if(makableMoves.size() == 0 && !player.equals(Colour.Black)) 
+        else makableMoves = makableMoves(player);
+        if(makableMoves.size() == 0 && !player.equals(Colour.Black)) 
         {
         	makableMoves.add(new MovePass(player));
         }
@@ -328,7 +329,7 @@ public class ScotlandYardModel extends ScotlandYard {
     	return possibleMoveTickets;
     }
     
-    //produces move for player at location moving along edge
+    //produces moves for player at location moving along edge
     private List<MoveTicket> edgeToTicket(int location, Colour player, Edge<Integer, Route> edge)
     {
     	List<MoveTicket> moves = new ArrayList();
@@ -343,43 +344,73 @@ public class ScotlandYardModel extends ScotlandYard {
     }
 
     @Override
-    public void spectate(Spectator spectator) {
-	spectators.add(spectator);
+    public void spectate(Spectator spectator) 
+    {
+		spectators.add(spectator);
     }
 
     //Adds a player to the game, storing the player's colour, location and tickets. 
     @Override 
     public boolean join(Player player, Colour colour, int location, Map<Ticket, Integer> tickets) {
-		if(orderOfPlay!=null && orderOfPlay.contains(colour)) return false; //how should we handle false return? 
-			else {
-				orderOfPlay.add(colour);
-				sortColours(orderOfPlay);
-				colourToPlayer.put(colour,player);
-				colourToLocation.put(colour,location);
-				if(showRounds.get(0) == true && colour.equals(Colour.Black)) lastKnownLocation = location;
-				colourToTickets.put(colour,tickets);
+		if(orderOfPlay != null && orderOfPlay.contains(colour)) return false;
+		else 
+		{
+			orderOfPlay.add(colour);
+			sortColours(orderOfPlay);
+			colourToPlayer.put(colour,player);
+			colourToLocation.put(colour,location);
+			if(showRounds.get(0) == true && colour.equals(Colour.Black)) lastKnownLocation = location;
+			colourToTickets.put(colour,tickets);
 	   	}
 		return true;
     }
 
     @Override
-    public List<Colour> getPlayers() {
-        return orderOfPlay; // do we want a separate list for players not in order of play?
+    public List<Colour> getPlayers() 
+    {
+        return orderOfPlay;
     }
 
     @Override
-    public Set<Colour> getWinningPlayers() {
-        return null;
+    public Set<Colour> getWinningPlayers() 
+    {
+        Set<Colour> mrX = new HashSet(); 
+        mrX.add(Colour.Black);
+        Set<Colour> detectives = new HashSet(orderOfPlay);
+        detectives.remove(Colour.Black);
+        Set<Colour> empty = new HashSet(); 
+        
+        if(!isReady()) return empty;
+        if (makableMoves(Colour.Black).size() == 0) return detectives;
+        int mrxLocation = colourToLocation.get(Colour.Black);
+        Boolean allDetectivesStuck = true; 
+        for(Colour player : orderOfPlay)
+        {
+        	if(!player.equals(Colour.Black))
+        	{
+        		int playerLocation = colourToLocation.get(player); 
+        		if(playerLocation == mrxLocation) return detectives;
+        		if(makableMoves(player).size() > 0) allDetectivesStuck = false;
+        	}
+        }
+        if(allDetectivesStuck) return mrX;
+        if(currentRound == showRounds.size() -1 && currentPlayer.equals(Colour.Black))
+        {
+        	return mrX;
+        }
+        return empty;
     }
 
     @Override
-    public int getPlayerLocation(Colour colour) {
+    public int getPlayerLocation(Colour colour) 
+    {
     	if(colour.equals(Colour.Black)) return lastKnownLocation;
     	else return colourToLocation.get(colour);
     }
 
     @Override
-    public int getPlayerTickets(Colour colour, Ticket ticket) {
+    public int getPlayerTickets(Colour colour, Ticket ticket) 
+    {
         Map<Ticket,Integer> ticketMap = colourToTickets.get(colour);
         return ticketMap.get(ticket);
     }
@@ -393,34 +424,18 @@ public class ScotlandYardModel extends ScotlandYard {
     	colourToTickets.put(colour, ticketMap);
     }
 	
-	//checks if game is over
+	//checks if game is over using getWinningPlayers()
     @Override
     public boolean isGameOver()
     {
-       	if(!isReady()) return isGameOver = false;
-        if (makableMoves(Colour.Black).size() == 0) return isGameOver = true;
-        int mrxLocation = colourToLocation.get(Colour.Black);
-        Boolean allDetectivesStuck = true; 
-        for(Colour player : orderOfPlay)
-        {
-        	if(!player.equals(Colour.Black))
-        	{
-        		int playerLocation = colourToLocation.get(player); 
-        		if(playerLocation == mrxLocation) return isGameOver = true;
-        		if(makableMoves(player).size() > 0) allDetectivesStuck = false;
-        	}
-        }
-        if(allDetectivesStuck) return isGameOver = true;
-        if(currentRound == showRounds.size() -1 && currentPlayer.equals(Colour.Black))
-        {
-        	return isGameOver = true;
-        }
-        return isGameOver = false;
+       if(getWinningPlayers().size() == 0) return isGameOver = false;
+       else return isGameOver = true;	
     }
 
     //Checks whether enough players have been added and that black is to start. 
     @Override
-    public boolean isReady() {
+    public boolean isReady() 
+    {
     	if(orderOfPlay.size() == numberOfDetectives +1 && orderOfPlay.get(0).equals(Colour.Black))
     	{
     		return true;
@@ -429,28 +444,34 @@ public class ScotlandYardModel extends ScotlandYard {
     }
 
     @Override
-    public Colour getCurrentPlayer() {
+    public Colour getCurrentPlayer()
+    {
         return currentPlayer; 
     }
 
     @Override
-    public int getRound() {
+    public int getRound() 
+    {
         return currentRound;
     }
 
     @Override
-    public List<Boolean> getRounds() {
+    public List<Boolean> getRounds() 
+    {
         return showRounds;
     }
 
-    //Ensures Black is at the front of the list. 
-    private List<Colour> sortColours(List<Colour> colours) {
-	int index = colours.indexOf(Colour.Black); //not sure this the best way to implement? 
-	if(index != (-1)) {
-		Colour firstColour = colours.get(0);
-		colours.set(0,Colour.Black);
-		colours.set(index,firstColour);	
-	}
-	return colours;
+    //Ensures Black is at the front of the list 
+    private List<Colour> sortColours(List<Colour> colours) 
+    {
+		int index = colours.indexOf(Colour.Black);
+		if(index != (-1))
+		{
+			Colour firstColour = colours.get(0);
+			colours.set(0,Colour.Black);
+			colours.set(index,firstColour);	
+		}
+		return colours;
     }
 }
+
