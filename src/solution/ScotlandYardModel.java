@@ -42,7 +42,7 @@ public class ScotlandYardModel extends ScotlandYard {
     
     //Class constructor reads and stores graph and game attributes (e.g. num of players, show rounds). 	
     public ScotlandYardModel(int numberOfDetectives, List<Boolean> rounds, String graphFileName) throws IOException{ 
-        super(numberOfDetectives, rounds, graphFileName); // ask TA
+        super(numberOfDetectives, rounds, graphFileName);
 		ScotlandYardGraphReader reader = new ScotlandYardGraphReader();
 		Graph<Integer,Route> graph = null;
 		try 
@@ -76,7 +76,7 @@ public class ScotlandYardModel extends ScotlandYard {
         Player player = colourToPlayer.get(colour);
         Move returnMove = player.notify(location, moves);
         if(moves.contains(returnMove)) return returnMove;
-        else return null; //what should we do here ?????
+        else return new MovePass(colour);
     }
 
     //sets next player, according to orderOfPlay, to currentPlayer 
@@ -145,20 +145,13 @@ public class ScotlandYardModel extends ScotlandYard {
     {
     	Colour colour = move.colour;
     	int target;
-    	if(colour.equals(Colour.Black))
+    	if(colour.equals(Colour.Black) && showRounds.get(roundNum) != true)
     	{
-    		if(showRounds.get(roundNum) == true)
-    		{
-				target = move.target;
-    		}
-    		else
-    		{
-				target = lastKnownLocation;
-    		}
+    		target = 0;
     	}
-    	else 
+    	else
     	{
-			target = move.target;
+    		target = move.target;
     	}
     	return new MoveTicket(colour, target, move.ticket);
     }
