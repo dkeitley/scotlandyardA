@@ -1,0 +1,21 @@
+import javax.swing.*;
+import java.net.*;
+
+class welcomeView
+{
+	public static void main(String[] args)
+	{
+		welcomeView program = new welcomeView();
+		SwingUtilities.invokeLater(program::run);
+	}
+	
+	void run()
+	{
+		JFrame window = new JFrame();
+		window.setDefaultCloseOperation(window.EXIT_ON_CLOSE);
+		window.add(new JLabel("Some graphics"));
+		window.pack();
+		window.setLocationByPlatform(true);
+		window.setVisible(true);
+	} 
+}
