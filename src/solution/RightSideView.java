@@ -1,5 +1,5 @@
-//package solution;
-//import scotlandyard.*;
+package solution;
+import scotlandyard.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -21,9 +21,9 @@ public class RightSideView extends JPanel{
 	
 		Box box = Box.createVerticalBox();
 		box.add(roundBox());
-		box.add(new JLabel("Single Round"));
+		box.add(new JLabel("Single Move"));
 		box.add(moveForm(singleMoveLabels(),singleMoveFields()));
-		box.add(new JLabel("Double Round"));
+		box.add(new JLabel("Double Move"));
 		box.add(moveForm(doubleMoveLabels(),doubleMoveFields()));
 		box.add(controlButtons());
 		
@@ -114,20 +114,23 @@ public class RightSideView extends JPanel{
 	public void addSaveButtonListener(ActionListener listener) {
 		saveButton.addActionListener(listener);
 	}
-	//will combobox be able to handle ticket?
-	/*public void setSingleTicketBox(Ticket[] tickets) {
-		for(String t:tickets) {
-			singleTicketBox.addItem(t);
+	
+	public void setSingleTicketBox(Ticket[] tickets) {
+		for(Ticket t:tickets) {
+			singleTicketBox.addItem(t.toString());
 		}
-	}*/
+	}
 
 	public void setRoundNum(int roundNum) {
 		roundNumLabel.setText(Integer.toString(roundNum));
 	}
 
-	public void setSingleMoveBox(int[] nodes) {
-		for(int n:nodes) {
-			singleMoveBox.addItem(n);
+	public void setSingleMoveBox(java.util.List<Move> moves) {
+		for(Move move:moves) {
+			if(move instanceof MoveTicket) {
+				MoveTicket ticket = (MoveTicket) move;
+				singleMoveBox.addItem(ticket.target);
+			}
 		}
 	}
 	
@@ -156,6 +159,21 @@ public class RightSideView extends JPanel{
 	public int getSingleMove() {
 		int target = (int)singleMoveBox.getSelectedItem();
 		return target;
+	}
+
+	public Ticket getSingleTicket() {
+		String ticket = (String)singleTicketBox.getSelectedItem();
+		switch(ticket) {
+			case "Taxi":
+				return Ticket.Taxi;
+			case "Bus":
+				return Ticket.Bus;
+			case "Underground":
+				return Ticket.Underground;
+			case "Secret Move":
+				return Ticket.SecretMove;
+			default: return Ticket.Taxi;
+		}
 	}
 
 	public int[] getDoubleMove() {

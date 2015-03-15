@@ -1,11 +1,14 @@
+package solution;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.net.*;
+import scotlandyard.*;
 
 public class MapView extends JPanel {
 	public MapView() {
-		ImageIcon map = new ImageIcon("map.jpg");
+		URL u = this.getClass().getResource("map.jpg");
+		ImageIcon map = new ImageIcon(u);
 		JLabel mapLabel = new JLabel(map);
 		this.add(mapLabel,BorderLayout.CENTER);
 	}

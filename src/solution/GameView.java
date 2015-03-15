@@ -1,30 +1,38 @@
+package solution;
 import javax.swing.*;
 import java.net.*;
+import scotlandyard.*;
 
 public class GameView {
-	private MapView map;
-	private RightSideView rsv;
+	public MapView map;
+	public RightSideView rsv;
+	public MrXMovesBar movesBar;
+	private int numRounds;
 	
-	public static void main(String[] args) {
-		GameView gameView = new GameView();
-		SwingUtilities.invokeLater(gameView::run);
+	public GameView(int rounds) {
+		numRounds = rounds;
+	}
+	public void run() {
+		GameView gameView = new GameView(numRounds);
+		SwingUtilities.invokeLater(gameView::display);
 	}
 
-	public void run() {
+	public void display() {
 		JFrame window = new JFrame();
 		window.setDefaultCloseOperation(window.EXIT_ON_CLOSE);
-		window.add(display());
+		window.add(createBox());
 		window.pack();
 		window.setLocationByPlatform(true);
 		window.setVisible(true);
-
 	}
-	Box display() {
+	Box createBox() {
 		Box box = Box.createHorizontalBox();
 		map = new MapView();
 		rsv = new RightSideView();
+		movesBar = new MrXMovesBar(numRounds);
 		box.add(map);
 		box.add(rsv);
+		box.add(movesBar);
 		return box;
 	}
 
