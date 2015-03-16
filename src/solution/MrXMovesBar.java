@@ -10,11 +10,11 @@ class MrXMovesBar extends JPanel {
 		table.getColumn("A").setHeaderValue(columnTitle);
 		table.setFillsViewportHeight(true);
 		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setPreferredSize(new Dimension(200,800));
+		scrollPane.setPreferredSize(new Dimension(200,table.getRowHeight()*(rounds+2)-11));
 		this.add(scrollPane);
 	}
-	public void updateMoveBar(Ticket ticket ,Boolean showRound) {
-
-	}
-	
+	/* TASKS
+	 * highlight the show rounds with a different colour
+	 * add functions to update elements of the table
+	*/	
 }
