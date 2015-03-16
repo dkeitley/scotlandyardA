@@ -8,30 +8,42 @@ import java.util.Map;
 
 class LeftSideView extends JPanel {
 	private java.util.List<Colour> colours;
-	private Map<Colour,Integer> colourToTicketsNum;
-	//will need to add a function in the presenter to construct
-	//Map<Colour,Integer>
-	public LeftSideView(java.util.List<Colour> players, Map<Colour,Integer> tickets) {
+	
+	public LeftSideView(java.util.List<Colour> players) {
 		colours = players;
-		colourToTicketsNum = tickets;
 		Box box = Box.createVerticalBox();
-		for(Colour c:players) {
-			box.add(new JLabel(c.toString()));
-			box.add(playerBox(colourToTicketsNum.get(c)));
-		}
-		this.add(box);
-	}
 
-	private Box playerBox(int numTickets) {
+		
+		for(Colour c:players) {
+			box.add(labels(c));
+			box.add(ticketsBox(c));
+		}
+		JScrollPane scrollPane = new JScrollPane(box);
+		scrollPane.setPreferredSize(new Dimension(300,800));
+		this.add(scrollPane);
+	}
+	private Box labels(Colour colour) {
 		Box box = Box.createVerticalBox();
-		JTable table = new JTable(numTickets,1);
-		table.getColumn("A").setHeaderValue("Tickets Available");
-		table.setFillsViewportHeight(true);
-		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setPreferredSize(new Dimension(300,table.getRowHeight()*(numTickets+2)-11));
-		box.add(scrollPane);
+		box.add(new JLabel(colour.toString()));
+		//need to make this field of class so can set/get
+		box.add(new JLabel("Location: "));
 		return box;
 	}
+	
+	private JScrollPane ticketsBox(Colour colour) {
+		JTable table;
+		if(colour.equals(Colour.Black)) {
+			table = new JTable(5,1);
+		} else {
+			table = new JTable(3,1);
+		}
+		table.getColumn("A").setHeaderValue("Tickets Available:");
+		table.setFillsViewportHeight(true);
+		JScrollPane pane = new JScrollPane(table);
+		pane.setPreferredSize(new Dimension(200,table.getRowHeight()*5 - 9));
+		return pane;
+	}
+	
 	
 	
 }

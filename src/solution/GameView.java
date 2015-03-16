@@ -14,16 +14,16 @@ public class GameView {
 	// number of rounds etc. 
 	private int numRounds;
 	private List<Colour> colours;
-	private Map<Colour,Integer> numTicketsMap;
-	
-	public GameView(int rounds, List<Colour> colours, Map<Colour,Integer> numTickets) {
+
+	//need to change this so view is given values before set visible
+	public GameView(int rounds, List<Colour> colours) {
 		numRounds = rounds;
 		this.colours = colours;
-		numTicketsMap = numTickets;
+	
 		
 	}
 	public void run() {
-		GameView gameView = new GameView(numRounds, colours, numTicketsMap);
+		GameView gameView = new GameView(numRounds, colours);
 		SwingUtilities.invokeLater(gameView::display);
 	}
 
@@ -40,7 +40,7 @@ public class GameView {
 		map = new MapView();
 		rsv = new RightSideView();
 		movesBar = new MrXMovesBar(numRounds);
-		lsv = new LeftSideView(colours,numTicketsMap);
+		lsv = new LeftSideView(colours);
 		box.add(lsv);
 		box.add(map);
 		box.add(rsv);
