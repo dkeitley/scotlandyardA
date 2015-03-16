@@ -53,7 +53,7 @@ class PlayerBox extends JPanel
         options.add(new JLabel("Colour: ", SwingConstants.RIGHT));
 		if(mrX)
 		{
-			String[] colourOptions = {Colour.Black.toString()};
+			Colour[] colourOptions = {Colour.Black};
 			this.colourOptions = new JComboBox(colourOptions);
 		}
 		else
@@ -91,27 +91,36 @@ class PlayerBox extends JPanel
 	
 	public int getNumTaxi()
 	{
-		return Integer.parseInt(numTaxi.getText());
+		if(numTaxi.getText().equals("")) return 0;
+		else return Integer.parseInt(numTaxi.getText());
 	}
 	
 	public int getNumBus()
 	{
-		return Integer.parseInt(numBus.getText());
+		if(numBus.getText().equals("")) return 0;
+		else return Integer.parseInt(numBus.getText());
 	}
 	
 	public int getNumUnderground()
 	{
+		if(numUnderground.getText().equals("")) return 0;
 		return Integer.parseInt(numUnderground.getText());
 	}
 	
 	public int getNumDouble()
 	{
+		if(numDouble.getText().equals("")) return 0;
 		return Integer.parseInt(numDouble.getText());
 	}
 	
 	public int getNumSecret()
 	{
+		if(numSecret.getText().equals("")) return 0;
 		return Integer.parseInt(numSecret.getText());
 	}
-	
 }
+
+
+
+
+

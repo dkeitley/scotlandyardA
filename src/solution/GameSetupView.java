@@ -10,10 +10,21 @@ class GameSetupView
 {
 	
 	private JButton addPlayer;
+	private JButton startGame;
+	private JTextField numRounds;
+	private JTextField showRounds;
+	private Box players;
+	private JScrollPane scrollable;
+	private java.util.List<PlayerBox> playerBoxes;
 	 
 	public GameSetupView()
 	{
 		addPlayer = new JButton("Add player");
+		startGame = new JButton("Start Game");
+		this.numRounds = new JTextField();
+		this.showRounds = new JTextField();
+		this.players = Box.createVerticalBox();
+		this.playerBoxes = new java.util.ArrayList();
 	}
 	
 	public void run()
@@ -21,28 +32,32 @@ class GameSetupView
 		JFrame w = new JFrame();
 		w.setBackground(new Color(255, 255, 255));
     	w.setDefaultCloseOperation(w.EXIT_ON_CLOSE);
-		w.add(display());
+		this.scrollable = display();
+		w.add(this.scrollable);
 		w.pack();
 		w.setLocationByPlatform(true);
 		w.setVisible(true);
 	}
 	
-	private Box display()
+	private JScrollPane display()
 	{
 		Box display = Box.createVerticalBox();
 		display.add(players());
 		display.add(addPlayersButton());
-		return display;
+		display.add(gameOptions());
+		display.add(addStartGameButton());
+		return new JScrollPane(display);
 	}
 	
 	private Box players()
 	{
 		PlayerBox mrX = new PlayerBox(true);
+		this.playerBoxes.add(mrX);
+		this.players.add(mrX);
+		this.players.add(Box.createRigidArea(new Dimension(10, 5)));
 		PlayerBox detective = new PlayerBox(false);
-		Box players = Box.createVerticalBox();
-		players.add(mrX);
-		players.add(Box.createRigidArea(new Dimension(10, 5)));
-		players.add(detective);
+		this.players.add(detective);
+		this.playerBoxes.add(detective);
 		return players;
 	}
 	
@@ -52,10 +67,63 @@ class GameSetupView
 		return addPlayer;
 	}
 	
+	private JPanel gameOptions()
+	{
+		JPanel options = new JPanel();
+		options.setLayout(new GridLayout(0, 2, 10, 10));
+		options.add(new JLabel("Game Options: "));
+		options.add(new JLabel(""));
+		options.add(new JLabel("Number of rounds: "));
+		options.add(numRounds);
+		options.add(new JLabel("MrX reveal rounds (enter as comma sperated list): "));
+		options.add(showRounds);
+		return options;
+	}
+	
+	private JButton addStartGameButton()
+	{
+		this.startGame.setActionCommand("startGame");
+		return startGame;
+	}
+	
+	public void addStartGameButtonListner(ActionListener listener)
+	{
+		this.startGame.addActionListener(listener);
+		return;
+	}
+	
 	public void addAddPlayerButtonListner(ActionListener listener)
 	{
 		this.addPlayer.addActionListener(listener);
-	} 	
+		return;
+	}
+	
+	public void addPlayerBox()
+	{
+		this.players.add(Box.createRigidArea(new Dimension(10, 5)));
+		PlayerBox detective = new PlayerBox(false);
+		this.players.add(detective);
+		this.playerBoxes.add(detective);
+		this.players.validate();
+        this.players.repaint();
+        this.scrollable.validate();
+        this.scrollable.repaint();
+	}
+	
+	public  java.util.List<PlayerBox> getPlayerBoxes()
+	{
+		return playerBoxes;
+	}
+	
+	public int getNumRounds()
+	{
+		return Integer.parseInt(numRounds.getText());
+	}
+	
+	public String getShowRounds()
+	{
+		return showRounds.getText();
+	}	
 }
 
 
