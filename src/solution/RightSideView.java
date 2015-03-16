@@ -26,7 +26,7 @@ public class RightSideView extends JPanel{
 		box.add(new JLabel("Double Move"));
 		box.add(moveForm(doubleMoveLabels(),doubleMoveFields()));
 		box.add(controlButtons());
-		
+		box.add(new MrXMovesBar());
 		this.add(box);
 	}
 
