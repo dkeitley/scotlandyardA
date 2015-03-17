@@ -26,7 +26,6 @@ public class RightSideView extends JPanel{
 		box.add(new JLabel("Double Move"));
 		box.add(moveForm(doubleMoveLabels(),doubleMoveFields()));
 		box.add(controlButtons());
-		box.add(new MrXMovesBar());
 		this.add(box);
 	}
 
@@ -115,7 +114,7 @@ public class RightSideView extends JPanel{
 		saveButton.addActionListener(listener);
 	}
 	
-	public void setSingleTicketBox(Ticket[] tickets) {
+	public void setSingleTickets(java.util.Set<Ticket> tickets) {
 		for(Ticket t:tickets) {
 			singleTicketBox.addItem(t.toString());
 		}
@@ -125,36 +124,37 @@ public class RightSideView extends JPanel{
 		roundNumLabel.setText(Integer.toString(roundNum));
 	}
 
-	public void setSingleMoveBox(java.util.List<Move> moves) {
-		for(Move move:moves) {
-			if(move instanceof MoveTicket) {
-				MoveTicket ticket = (MoveTicket) move;
-				singleMoveBox.addItem(ticket.target);
-			}
+	//may want to order these sets....
+	public void setSingleMoves(java.util.Set<Integer> moves) {
+		for(Integer move:moves) {
+			singleMoveBox.addItem(move);
 		}
+		
 	}
 	
-	public void setDoubleMoveBox1(int[] nodes) {
-		for(int n:nodes) {
+	public void setDoubleMoves1(java.util.Set<Integer> nodes) {
+		for(Integer n:nodes) {
 			doubleMoveBox1.addItem(n);
 		}
 	}
-	/*public void setDoubleTicketBox1(Ticket[] tickets) {
-		for(Ticket t:tickets) {
-			doubleTicketBox1.addItem(t);
-		}
-	}*/
 
-	public void setDoubleMoveBox2(int[] nodes) {
-		for(int n:nodes) {
+	public void setDoubleTickets1(java.util.Set<Ticket> tickets) {
+		for(Ticket t:tickets) {
+			doubleTicketBox1.addItem(t.toString());
+		}
+	}
+
+	public void setDoubleMoves2(java.util.Set<Integer> nodes) {
+		for(Integer n:nodes) {
 			doubleMoveBox2.addItem(n);
 		}
 	}
-	/*public void setDoubleTicketBox2(Ticket[] tickets) {
+
+	public void setDoubleTickets2(java.util.Set<Ticket> tickets) {
 		for(Ticket t:tickets) {
-			doubleTicketBox2.addItem(t);
+			doubleTicketBox2.addItem(t.toString());
 		}
-	}*/
+	}
 
 	public int getSingleMove() {
 		int target = (int)singleMoveBox.getSelectedItem();
