@@ -170,9 +170,9 @@ public class RightSideView extends JPanel{
 				return Ticket.Bus;
 			case "Underground":
 				return Ticket.Underground;
-			case "Secret Move":
+			case "SecretMove":
 				return Ticket.SecretMove;
-			default: return Ticket.Taxi;
+			default: return null;
 		}
 	}
 

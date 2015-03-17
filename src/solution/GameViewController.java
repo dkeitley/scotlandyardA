@@ -3,6 +3,7 @@ import scotlandyard.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.List;
 
 public class GameViewController {
 
@@ -25,7 +26,7 @@ public class GameViewController {
 
 		MrXMovesBar movesBar = new MrXMovesBar(model.getRounds().size());
 		
-		//view.rsv.addGoButtonListener(new goButtonListener());
+		rsv.addGoButtonListener(new goButtonListener());
 		view.createView(lsv,map,rsv,movesBar);
 
 	}
@@ -153,6 +154,29 @@ public class GameViewController {
 			Colour colour = model.getCurrentPlayer();
 			MoveTicket move = new MoveTicket(colour,target,ticket);
 			model.play(move);
+			view.lsv.setNumTickets(colour,ticket,model.getPlayerTickets(colour,ticket));
+			
+			if(colour.equals(Colour.Black)) {
+				int currentRound = model.getRound();
+				Boolean showRound = model.getRounds().get(currentRound);
+				int location = model.getPlayerLocation(colour);
+				view.movesBar.addMrXMove(ticket,showRound,currentRound,location);
+				
+			}
+
+			
+			//update circles on map
+			//increment player
+			model.nextPlayer();
+			Colour newPlayer = model.getCurrentPlayer();
+			//get valid moves for next player
+			List<Move> nextMoves = model.validMoves(newPlayer);
+			Set<Move> movesSet = new HashSet<Move>(nextMoves);
+			//update new location
+			view.rsv.singleMoveBox.removeAllItems();
+			view.rsv.singleTicketBox.removeAllItems();
+			updateSingleMoves(movesSet);
+			updateSingleTickets(movesSet);
 		}
 	}
 }

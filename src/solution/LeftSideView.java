@@ -55,29 +55,26 @@ class LeftSideView extends JPanel {
 	public void setNumTickets(Colour colour, Ticket ticket, int value) {
 		JTable table = colourToTable.get(colour);
 		String text;
-		switch(ticket) {
-			case Taxi:
+			if(ticket.equals(Ticket.Taxi)) {
 				text = Integer.toString(value) + " Taxi tickets";
 				table.setValueAt(text,0,0);
-			case Bus:
+			} else if (ticket.equals(Ticket.Bus)) {
 				text = Integer.toString(value) + " Bus tickets";
 				table.setValueAt(text,1,0);
-			case Underground:
+			}  else if (ticket.equals(Ticket.Underground)) {
 				text = Integer.toString(value) + " Underground tickets";
 				table.setValueAt(text,2,0);
-			case SecretMove:
+			} else if (ticket.equals(Ticket.SecretMove)) {
 				if(colour.equals(Colour.Black)) {
 					text = Integer.toString(value) + " Secret Moves";
 					table.setValueAt(text,3,0);
 				}
-			case DoubleMove:
+			} else {
 				if(colour.equals(Colour.Black)) {
 					text = Integer.toString(value) + " Double Moves";
 					table.setValueAt(text,4,0);
 				}
-				
-			default: return;			
-		}
+			}
 	}
 
 	//updates the location label of a player
