@@ -89,34 +89,29 @@ class PlayerBox extends JPanel
 		return (Colour) colourOptions.getSelectedItem();
 	}
 	
-	public int getNumTaxi()
+	public String getNumTaxi()
 	{
-		if(numTaxi.getText().equals("")) return 0;
-		else return Integer.parseInt(numTaxi.getText());
+		return numTaxi.getText();
 	}
 	
-	public int getNumBus()
+	public String getNumBus()
 	{
-		if(numBus.getText().equals("")) return 0;
-		else return Integer.parseInt(numBus.getText());
+		return numBus.getText();
 	}
 	
-	public int getNumUnderground()
+	public String getNumUnderground()
 	{
-		if(numUnderground.getText().equals("")) return 0;
-		return Integer.parseInt(numUnderground.getText());
+		return numUnderground.getText();
 	}
 	
-	public int getNumDouble()
+	public String getNumDouble()
 	{
-		if(numDouble.getText().equals("")) return 0;
-		return Integer.parseInt(numDouble.getText());
+		return numDouble.getText();
 	}
 	
-	public int getNumSecret()
+	public String getNumSecret()
 	{
-		if(numSecret.getText().equals("")) return 0;
-		return Integer.parseInt(numSecret.getText());
+		return numSecret.getText();
 	}
 }
 

@@ -16,6 +16,7 @@ class GameSetupView
 	private Box players;
 	private JScrollPane scrollable;
 	private java.util.List<PlayerBox> playerBoxes;
+	private JFrame w = new JFrame();
 	 
 	public GameSetupView()
 	{
@@ -29,7 +30,6 @@ class GameSetupView
 	
 	public void run()
 	{
-		JFrame w = new JFrame();
 		w.setBackground(new Color(255, 255, 255));
     	w.setDefaultCloseOperation(w.EXIT_ON_CLOSE);
 		this.scrollable = display();
@@ -115,14 +115,19 @@ class GameSetupView
 		return playerBoxes;
 	}
 	
-	public int getNumRounds()
+	public String getNumRounds()
 	{
-		return Integer.parseInt(numRounds.getText());
+		return numRounds.getText();
 	}
 	
 	public String getShowRounds()
 	{
 		return showRounds.getText();
+	}	
+	
+	public void displayErrorMessage(String errorMessage) 
+	{
+		JOptionPane.showMessageDialog(w, errorMessage);
 	}	
 }
 

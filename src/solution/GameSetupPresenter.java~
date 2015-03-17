@@ -38,15 +38,23 @@ class GameSetupPresenter
 			}
 			else if(action.equals("startGame"))
 			{
-				ScotlandYardModel model = createModel(view.getShowRounds());
-				for (PlayerBox box : view.getPlayerBoxes())
+				if(validateInput())
 				{
-					Colour colour = box.getColour();
-					Map<Ticket, Integer> ticketMap = createTicketMap(box);
-					int startingLocation = getStartLocation(colour);
-					model.join(new PlayerImplementation(), colour, startingLocation, ticketMap);
+					ScotlandYardModel model = createModel(view.getShowRounds());
+					for (PlayerBox box : view.getPlayerBoxes())
+					{
+						Colour colour = box.getColour();
+						Map<Ticket, Integer> ticketMap = createTicketMap(box);
+						int startingLocation = getStartLocation(colour);
+						model.join(new PlayerImplementation(), colour, startingLocation, ticketMap);
+					}
 				}
-			} 
+				else
+				{
+					view.displayErrorMessage("Oops. looks like you entered something wrong. Please try again");
+				}
+				
+			}
 		}
 	}
 	
@@ -75,15 +83,50 @@ class GameSetupPresenter
 	private Map<Ticket, Integer> createTicketMap(PlayerBox box)
 	{
 		Map<Ticket, Integer> tickets = new HashMap();
-		tickets.put(Ticket.Taxi, box.getNumTaxi());
-		tickets.put(Ticket.Bus, box.getNumBus());
-		tickets.put(Ticket.Underground, box.getNumUnderground());
+		tickets.put(Ticket.Taxi, Integer.parseInt(box.getNumTaxi()));
+		tickets.put(Ticket.Bus, Integer.parseInt(box.getNumBus()));
+		tickets.put(Ticket.Underground, Integer.parseInt(box.getNumUnderground()));
 		if(box.getColour().equals(Colour.Black))
 		{
-			tickets.put(Ticket.DoubleMove, box.getNumDouble());
-			tickets.put(Ticket.SecretMove, box.getNumSecret());
+			tickets.put(Ticket.DoubleMove, Integer.parseInt(box.getNumDouble()));
+			tickets.put(Ticket.SecretMove, Integer.parseInt(box.getNumSecret()));
 		}
 		return tickets;
+	}
+	
+	private boolean validateInput()
+	{
+		for (PlayerBox box : view.getPlayerBoxes())
+		{
+			if(!validateInt(box.getNumTaxi())) return false;
+			if(!validateInt(box.getNumBus())) return false;
+			if(!validateInt(box.getNumUnderground())) return false;
+			if(box.getColour().equals(Colour.Black))
+			{
+				if(!validateInt(box.getNumDouble())) return false;
+				if(!validateInt(box.getNumSecret())) return false;
+			}
+		}
+		if(!validateInt(view.getNumRounds())) return false;
+		String[] rounds = view.getShowRounds().split(" , | ,|, |,");
+		for(String round : rounds)
+		{
+			if(!validateInt(round)) return false;
+		}
+		return true;
+	}
+	
+	private boolean validateInt(String num)
+	{
+		try
+		{
+			Integer.parseInt(num);
+			return true;
+		}
+		catch(Exception e)
+		{
+			return false;
+		}
 	}
 	
 	private ScotlandYardModel createModel(String showRounds)
@@ -103,7 +146,7 @@ class GameSetupPresenter
 	private java.util.List<Boolean> createShowRoundsList(String showRounds)
 	{
 		String[] rounds = showRounds.split(" , | ,|, |,");
-		Boolean[] roundsList = new Boolean[view.getNumRounds() + 1];
+		Boolean[] roundsList = new Boolean[Integer.parseInt(view.getNumRounds()) + 1];
 		Arrays.fill(roundsList, false);
 		for(String round : rounds)
 		{
