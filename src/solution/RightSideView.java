@@ -4,49 +4,27 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
+import java.util.Set;
 
 public class RightSideView extends JPanel{
 
 	public JLabel roundNumLabel;
-	public JComboBox singleMoveBox;
-	public JComboBox doubleMoveBox1;
-	public JComboBox doubleMoveBox2;
-	public JComboBox singleTicketBox;
-	public JComboBox doubleTicketBox1;
-	public JComboBox doubleTicketBox2;
+	public JComboBox firstMoveLocationsBox;
+	public JComboBox secondMoveLocationsBox;
+	public JComboBox firstMoveTicketBox;
+	public JComboBox secondMoveTicketBox;
+	public JButton doubleMoveButton;
 	public JButton goButton;
 	public JButton saveButton;
+	public JButton clearButton;
 	
 	public RightSideView() {
 	
 		Box box = Box.createVerticalBox();
 		box.add(roundBox());
-		box.add(new JLabel("Single Move"));
-		box.add(moveForm(singleMoveLabels(),singleMoveFields()));
-		box.add(new JLabel("Double Move"));
-		box.add(moveForm(doubleMoveLabels(),doubleMoveFields()));
+		box.add(moveForm(moveLabels(),moveFields()));
 		box.add(controlButtons());
 		this.add(box);
-	}
-
-	Box singleMoveLabels() {
-		JLabel move = new JLabel("Move to: ");
-		JLabel ticket = new JLabel("Using ticket: ");
-		Box box = Box.createVerticalBox();
-		box.add(move);
-		box.add(ticket); 
-		return box;
-	}
-
-	Box singleMoveFields() {
-		JComboBox<String> moves = new JComboBox<String>();
-		JComboBox<String> tickets = new JComboBox<String>();
-		singleMoveBox = moves;
-		singleTicketBox = tickets;
-		Box box = Box.createVerticalBox();
-		box.add(moves);
-		box.add(tickets);
-		return box;
 	}
 
 	Box moveForm(Box labels, Box fields) {
@@ -55,8 +33,8 @@ public class RightSideView extends JPanel{
 		box.add(fields);
 		return box;
 	}
-
-	Box doubleMoveLabels() {
+	//will need to change this
+	Box moveLabels() {
 		Box box = Box.createVerticalBox();
 		box.add(new JLabel("Move 1:"));
 		box.add(new JLabel("Move to: "));
@@ -67,20 +45,22 @@ public class RightSideView extends JPanel{
 		return box;
 	}
 	
-	Box doubleMoveFields() {
+	Box moveFields() {
 		JComboBox<String> moves1 = new JComboBox<String>();
 		JComboBox<String> tickets1 = new JComboBox<String>();
 		JComboBox<String> moves2 = new JComboBox<String>();
 		JComboBox<String> tickets2 = new JComboBox<String>();
+		doubleMoveButton = new JButton("Use Double Move");
 		
-		doubleMoveBox1 = moves1;
-		doubleTicketBox1 = tickets1;
-		doubleMoveBox2 = moves2;
-		doubleTicketBox2 = tickets2;
+		firstMoveLocationsBox = moves1;
+		firstMoveTicketBox = tickets1;
+		secondMoveLocationsBox = moves2;
+		secondMoveTicketBox = tickets2;
 		
 		Box box = Box.createVerticalBox();
 		box.add(moves1);
 		box.add(tickets1);
+		box.add(doubleMoveButton);
 		box.add(moves2);
 		box.add(tickets2);
 		
@@ -101,22 +81,50 @@ public class RightSideView extends JPanel{
 		Box box = Box.createHorizontalBox();
 		saveButton = new JButton("Save Game");
 		goButton = new JButton("Go");
+		clearButton = new JButton("Clear");
 		box.add(goButton);
 		box.add(saveButton);
+		box.add(clearButton);
 		return box;
 	}
 
+	public void displaySecondMove() {
+		secondMoveLocationsBox.setVisible(true);
+		secondMoveTicketBox.setVisible(true);
+	}
+
+	public void hideSecondMove() {
+		secondMoveLocationsBox.setVisible(false);
+		secondMoveTicketBox.setVisible(false);
+	}
+	
 	public void addGoButtonListener(ActionListener listener) {
 		goButton.addActionListener(listener);
+	}
+
+	public void addClearButtonListener(ActionListener listener) {
+		clearButton.addActionListener(listener);
+	}
+	
+	public void addDoubleMoveButtonListener(ActionListener listener) {
+		doubleMoveButton.addActionListener(listener);
+	}
+
+	public void addFirstMoveLocationsListener(ActionListener listener) {
+		firstMoveLocationsBox.addActionListener(listener);
+	}
+
+	public void addSecondMoveLocationsListener(ActionListener listener) {
+		secondMoveLocationsBox.addActionListener(listener);
 	}
 
 	public void addSaveButtonListener(ActionListener listener) {
 		saveButton.addActionListener(listener);
 	}
 	
-	public void setSingleTickets(java.util.Set<Ticket> tickets) {
+	public void setFirstMoveTickets(Set<Ticket> tickets) {
 		for(Ticket t:tickets) {
-			singleTicketBox.addItem(t.toString());
+			firstMoveTicketBox.addItem(t.toString());
 		}
 	}
 
@@ -125,44 +133,32 @@ public class RightSideView extends JPanel{
 	}
 
 	//may want to order these sets....
-	public void setSingleMoves(java.util.Set<Integer> moves) {
+	public void setFirstMoveLocations(Set<Integer> moves) {
 		for(Integer move:moves) {
-			singleMoveBox.addItem(move);
+			firstMoveLocationsBox.addItem(move);
 		}
 		
 	}
-	
-	public void setDoubleMoves1(java.util.Set<Integer> nodes) {
-		for(Integer n:nodes) {
-			doubleMoveBox1.addItem(n);
+
+	public void setSecondMoveLocations(Set<Integer> locations) {
+		for(Integer n:locations) {
+			secondMoveLocationsBox.addItem(n);
 		}
 	}
 
-	public void setDoubleTickets1(java.util.Set<Ticket> tickets) {
+	public void setSecondMoveTickets(Set<Ticket> tickets) {
 		for(Ticket t:tickets) {
-			doubleTicketBox1.addItem(t.toString());
+			secondMoveTicketBox.addItem(t.toString());
 		}
 	}
 
-	public void setDoubleMoves2(java.util.Set<Integer> nodes) {
-		for(Integer n:nodes) {
-			doubleMoveBox2.addItem(n);
-		}
-	}
-
-	public void setDoubleTickets2(java.util.Set<Ticket> tickets) {
-		for(Ticket t:tickets) {
-			doubleTicketBox2.addItem(t.toString());
-		}
-	}
-
-	public int getSingleMove() {
-		int target = (int)singleMoveBox.getSelectedItem();
+	public int getFirstLocation() {
+		int target = (int)firstMoveLocationsBox.getSelectedItem();
 		return target;
 	}
 
-	public Ticket getSingleTicket() {
-		String ticket = (String)singleTicketBox.getSelectedItem();
+	public Ticket getFirstTicket() {
+		String ticket = (String)firstMoveTicketBox.getSelectedItem();
 		switch(ticket) {
 			case "Taxi":
 				return Ticket.Taxi;
@@ -176,22 +172,23 @@ public class RightSideView extends JPanel{
 		}
 	}
 
-	public int[] getDoubleMove() {
-		int target1 = (int) doubleMoveBox1.getSelectedItem();
-		int target2 = (int) doubleMoveBox2.getSelectedItem();
-		int[] targets = new int[2];
-		targets[0] = target1;
-		targets[1] = target2;
-		return targets;
+	public int getSecondLocation() {
+		return (int) secondMoveLocationsBox.getSelectedItem();
 	}
-	//How can I use an array of Tickets? Shall we just use strings?
-	/*public Ticket[] getDoubleTickets() {
-		Ticket ticket1 = (Ticket) doubleTicketBox1.getSeletcedItem();
-		Ticket ticket2 = (Ticket) doubleTicketBox2.getSelectedItem();
-		Ticket tickets = new Ticket[2];
-		tickets[0] = ticket1;
-		tickets[1] = ticket2;
-		return tickets;
-	} 
-	*/
+
+	public Ticket getSecondTicket() {
+		String ticket = (String)secondMoveTicketBox.getSelectedItem();
+		switch(ticket) {
+			case "Taxi":
+				return Ticket.Taxi;
+			case "Bus":
+				return Ticket.Bus;
+			case "Underground":
+				return Ticket.Underground;
+			case "SecretMove":
+				return Ticket.SecretMove;
+			default: return null;
+		}
+	}
+
 }

@@ -5,14 +5,44 @@ import java.awt.event.*;
 import java.util.*;
 import java.util.List;
 
+//probably worth storing currentPlayer in global variable
+//some very smelly code here
+//may want to put all listeners in a single class
+//may want to initialise all listeners in a single function
+
 public class GameViewController {
 
 	private ScotlandYardModel model;
 	private GameView view;
+
+	private Colour currentPlayer;
+	//don't think i need a lot of these
+	private Set<Move> validMoves;
+	private Set<MoveTicket> validMoveTickets;
+	private Set<MoveDouble> validDoubleMoves; 
+
+	private Set<Move> firstMoves;
+	private Set<Move> secondMoves;
+
+	private Set<Integer> firstMoveLocations;
+	private Set<Ticket> firstMoveTickets;
+	private Set<Ticket> secondMoveTickets;
+	private Set<Integer> secondMoveLocations;
+
+	private ActionListener firstListener;
+	private ActionListener secondListener;
+
 	
 	public GameViewController(ScotlandYardModel model, GameView view) {
 		this.model = model;
 		this.view = view;
+
+		firstMoveLocations = new HashSet<Integer>();
+		firstMoveTickets = new HashSet<Ticket>();
+	 	secondMoveTickets = new HashSet<Ticket>();
+		secondMoveLocations = new HashSet<Integer>();
+		firstMoves = new HashSet<Move>();
+		secondMoves = new HashSet<Move>();
 	}
 
 	public void run() {
@@ -25,8 +55,18 @@ public class GameViewController {
 		MapView map = new MapView();
 
 		MrXMovesBar movesBar = new MrXMovesBar(model.getRounds().size());
+
 		
-		rsv.addGoButtonListener(new goButtonListener());
+		//create a single function for this?
+		rsv.addGoButtonListener(new GoButtonListener());
+
+		firstListener = new FirstMoveLocationListener();
+		secondListener = new SecondMoveLocationListener();
+		rsv.addFirstMoveLocationsListener(firstListener);
+		rsv.addSecondMoveLocationsListener(secondListener);
+		rsv.addClearButtonListener(new ClearButtonListener());
+		rsv.addDoubleMoveButtonListener(new DoubleMoveButtonListener());
+		
 		view.createView(lsv,map,rsv,movesBar);
 
 	}
@@ -40,6 +80,7 @@ public class GameViewController {
 			lsv.setNumTickets(colour,Ticket.Bus,model.getPlayerTickets(colour,Ticket.Bus));
 			lsv.setNumTickets(colour,Ticket.Underground,
 			model.getPlayerTickets(colour,Ticket.Underground));
+			
 			lsv.setLocation(colour,model.getPlayerLocation(colour)); 
 			
 			if(colour.equals(Colour.Black)) {
@@ -53,56 +94,37 @@ public class GameViewController {
 	}
 
 	private void initialiseRSV(RightSideView rsv) {
-		Colour currentPlayer = model.getCurrentPlayer();
+		currentPlayer = model.getCurrentPlayer();
 		
-		java.util.Set<Integer> locations = new HashSet<Integer>();
-		java.util.Set<Ticket> tickets = new HashSet<Ticket>();
-
-		java.util.Set<Move> firstMoves = new HashSet<Move>();
-		java.util.Set<Move> secondMoves = new HashSet<Move>();
+		validMoves = new HashSet<Move>(model.validMoves(currentPlayer));
 		
-		java.util.Set<Move> makeableMoves = new HashSet<Move>(model.validMoves(currentPlayer));
-		java.util.Set<MoveTicket> moveTickets = createMoveTickets(makeableMoves);
-		java.util.Set<MoveDouble> doubleMoves = createDoubleMoves(makeableMoves);
+		validMoveTickets = createMoveTickets(validMoves);
+		validDoubleMoves = createDoubleMoves(validMoves);
 		
-		for(MoveTicket moveTicket:moveTickets) {
-			locations.add(moveTicket.target);
-			tickets.add(moveTicket.ticket);
+		for(MoveTicket moveTicket:validMoveTickets) {
+			firstMoveLocations.add(moveTicket.target);
+			firstMoveTickets.add(moveTicket.ticket);
 		}
 		
-		for(MoveDouble doubleMove:doubleMoves) {
+		for(MoveDouble doubleMove:validDoubleMoves) {
 			firstMoves.add(doubleMove.moves.get(0));
 			secondMoves.add(doubleMove.moves.get(1));
 		}
 
-		java.util.Set<MoveTicket> firstMoveTickets = createMoveTickets(firstMoves);
-		java.util.Set<MoveTicket> secondMoveTickets = createMoveTickets(secondMoves);
-		//need to deal with case where in a double move they play another double move
-		java.util.Set<Integer> firstLocations = new HashSet<Integer>();
-		java.util.Set<Integer> secondLocations = new HashSet<Integer>();
-		java.util.Set<Ticket> firstTickets = new HashSet<Ticket>();
-		java.util.Set<Ticket> secondTickets = new HashSet<Ticket>();
+		Set<MoveTicket> validSecondMoveTickets = createMoveTickets(secondMoves);	
 		
-		for(MoveTicket ticket1:firstMoveTickets) {
-			firstLocations.add(ticket1.target);
-			firstTickets.add(ticket1.ticket);
+		for(MoveTicket ticket2: validSecondMoveTickets) {
+			secondMoveLocations.add(ticket2.target);
+			secondMoveTickets.add(ticket2.ticket);
 		}
 
-		for(MoveTicket ticket2:secondMoveTickets) {
-			secondLocations.add(ticket2.target);
-			secondTickets.add(ticket2.ticket);
-		}
-
-		rsv.setSingleMoves(locations);
-		rsv.setSingleTickets(tickets);
-		rsv.setDoubleMoves1(firstLocations);
-		rsv.setDoubleTickets1(firstTickets);
-		rsv.setDoubleMoves2(secondLocations);
-		rsv.setDoubleTickets2(secondTickets);
+		rsv.setFirstMoveLocations(firstMoveLocations);
+		rsv.hideSecondMove();
 	}
 
-	private java.util.Set<MoveTicket> createMoveTickets(java.util.Set<Move> moves) {
-		java.util.Set<MoveTicket> moveTickets = new HashSet<MoveTicket>();
+	//creates a set of MoveTickets from a set of Moves
+	private Set<MoveTicket> createMoveTickets(Set<Move> moves) {
+		Set<MoveTicket> moveTickets = new HashSet<MoveTicket>();
 		for(Move move:moves) {
 			if(move instanceof MoveTicket) {
 				MoveTicket ticket = (MoveTicket) move;
@@ -112,8 +134,9 @@ public class GameViewController {
 		return moveTickets;
 	}
 
-	private java.util.Set<MoveDouble> createDoubleMoves(java.util.Set<Move> moves) {
-		java.util.Set<MoveDouble> doubleMoves = new HashSet<MoveDouble>();
+	//creates a set of MoveDoubles from a set of Moves
+	private Set<MoveDouble> createDoubleMoves(java.util.Set<Move> moves) {
+		Set<MoveDouble> doubleMoves = new HashSet<MoveDouble>();
 		for(Move move:moves) {
 			if(move instanceof MoveDouble) {
 				MoveDouble doubleMove = (MoveDouble) move;
@@ -122,63 +145,122 @@ public class GameViewController {
 		}
 		return doubleMoves;
 	}
-	//changes the values in the single move locations combo box
-	private void updateSingleMoves(java.util.Set<Move> moves) {
-		java.util.Set<Integer> nodes = new HashSet<Integer>();
-		for(Move move:moves) {
-			if(move instanceof MoveTicket) {
-				MoveTicket ticket = (MoveTicket) move;
-				nodes.add(ticket.target);
-			}
-		}
-		view.rsv.setSingleMoves(nodes);
+	
+	//updates the values in the first move (locations) combo boxes
+	private void updateFirstMoves() {
+		view.rsv.setFirstMoveLocations(firstMoveLocations);
 	}
 
-	//changes the values in the single move ticket combobox
-	private void updateSingleTickets(java.util.Set<Move> moves) {
-		java.util.Set<Ticket> tickets = new HashSet<Ticket>();
-		for(Move move:moves) {
-			if(move instanceof MoveTicket) {
-				MoveTicket ticket = (MoveTicket) move;
-				tickets.add(ticket.ticket);
-			}
-		}
-		view.rsv.setSingleTickets(tickets);
-	}
 
-	class goButtonListener implements ActionListener {
+	class GoButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
-			//assuming detective for now...
-			int target = view.rsv.getSingleMove();
-			Ticket ticket = view.rsv.getSingleTicket();
-			Colour colour = model.getCurrentPlayer();
-			MoveTicket move = new MoveTicket(colour,target,ticket);
-			model.play(move);
-			view.lsv.setNumTickets(colour,ticket,model.getPlayerTickets(colour,ticket));
+		
+			int target = view.rsv.getFirstLocation();
+			Ticket ticket = view.rsv.getFirstTicket();
 			
-			if(colour.equals(Colour.Black)) {
+			MoveTicket move = new MoveTicket(currentPlayer,target,ticket);
+			model.play(move);
+			view.lsv.setNumTickets(currentPlayer,ticket,model.getPlayerTickets(currentPlayer,ticket));
+			view.rsv.hideSecondMove();
+			if(currentPlayer.equals(Colour.Black)) {
 				int currentRound = model.getRound();
 				Boolean showRound = model.getRounds().get(currentRound);
-				int location = model.getPlayerLocation(colour);
+				int location = model.getPlayerLocation(currentPlayer);
 				view.movesBar.addMrXMove(ticket,showRound,currentRound,location);
-				
 			}
 
+			view.lsv.setLocation(currentPlayer,model.getPlayerLocation(currentPlayer));
+			view.rsv.setRoundNum(model.getRound());
 			
-			//update circles on map
-			//increment player
 			model.nextPlayer();
-			Colour newPlayer = model.getCurrentPlayer();
-			//get valid moves for next player
-			List<Move> nextMoves = model.validMoves(newPlayer);
-			Set<Move> movesSet = new HashSet<Move>(nextMoves);
-			//update new location
-			view.rsv.singleMoveBox.removeAllItems();
-			view.rsv.singleTicketBox.removeAllItems();
-			updateSingleMoves(movesSet);
-			updateSingleTickets(movesSet);
+			currentPlayer = model.getCurrentPlayer();
+			validMoves = new HashSet<Move>(model.validMoves(currentPlayer));
+			validMoveTickets = createMoveTickets(validMoves);
+			validDoubleMoves = createDoubleMoves(validMoves);
+		
+			
+			view.rsv.firstMoveLocationsBox.removeAllItems();
+			view.rsv.firstMoveTicketBox.removeAllItems();
+			updateFirstMoves();
+			
+		}
+	
+	}
+
+	class FirstMoveLocationListener implements ActionListener {
+		public void actionPerformed(ActionEvent event) {
+		
+			validMoveTickets = createMoveTickets(validMoves);
+			int chosenLocation = view.rsv.getFirstLocation();
+			
+			Set<Ticket> possibleTickets = new HashSet<Ticket>();
+		
+			for(MoveTicket moveTicket : validMoveTickets) {
+				if(moveTicket.target == chosenLocation) {
+					possibleTickets.add(moveTicket.ticket);
+				}
+			}
+			
+			view.rsv.firstMoveTicketBox.removeAllItems();
+			view.rsv.setFirstMoveTickets(possibleTickets);
 		}
 	}
+	
+	class SecondMoveLocationListener implements ActionListener {
+		public void actionPerformed(ActionEvent event) {
+			int firstLocation = view.rsv.getFirstLocation();
+			int secondLocation = view.rsv.getSecondLocation();			
+			Set<Ticket> possibleTickets = new HashSet<Ticket>();
+			for(MoveDouble moveDouble: validDoubleMoves) {
+				MoveTicket firstTicket = (MoveTicket) moveDouble.moves.get(0);
+				MoveTicket secondTicket = (MoveTicket) moveDouble.moves.get(1);
+				if(secondTicket.target == secondLocation && firstTicket.target == firstLocation) {
+					possibleTickets.add(secondTicket.ticket);
+				}
+			} 
+			
+			view.rsv.secondMoveTicketBox.removeAllItems();
+			view.rsv.setSecondMoveTickets(possibleTickets);
+			
+		}
+	}
+
+	//bit of a hack, could be implemented better?
+	class ClearButtonListener implements ActionListener {
+		public void actionPerformed(ActionEvent event) {
+			
+			view.rsv.secondMoveLocationsBox.removeActionListener(secondListener);
+			view.rsv.secondMoveLocationsBox.removeAllItems();
+			view.rsv.secondMoveTicketBox.removeAllItems();
+			view.rsv.firstMoveTicketBox.removeAllItems();
+			view.rsv.firstMoveLocationsBox.removeActionListener(firstListener);
+			view.rsv.firstMoveLocationsBox.removeAllItems();
+			
+			updateFirstMoves();
+
+			view.rsv.addFirstMoveLocationsListener(firstListener);
+			view.rsv.addSecondMoveLocationsListener(secondListener);
+			view.rsv.hideSecondMove();
+		}
+	}
+
+	class DoubleMoveButtonListener implements ActionListener {
+		public void actionPerformed(ActionEvent event) {
+			int location = view.rsv.getFirstLocation();
+			Set<Integer> possibleLocations = new HashSet<Integer>();
+			for(MoveDouble moveDouble: validDoubleMoves) {
+				MoveTicket firstMove = (MoveTicket) moveDouble.moves.get(0);
+				if(firstMove.target == location) {
+					MoveTicket secondMove = (MoveTicket) moveDouble.moves.get(1);
+					possibleLocations.add(secondMove.target);
+				}
+			}
+			view.rsv.setSecondMoveLocations(possibleLocations);
+			
+			view.rsv.displaySecondMove();
+		}
+	}
+
 }
 
 
