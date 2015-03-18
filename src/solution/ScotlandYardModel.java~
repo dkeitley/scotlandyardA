@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.*;
 
-public class ScotlandYardModel extends ScotlandYard {
+public class ScotlandYardModel extends ScotlandYard implements java.io.Serializable {
 	private final Graph<Integer,Route> londonGraph;
 	private Colour currentPlayer;
 	private final Map<Colour,Player> colourToPlayer;
@@ -23,7 +23,7 @@ public class ScotlandYardModel extends ScotlandYard {
 	//so part way through a trun a game can't end - all internal refrences to 
 	//checking if a game is over should refer to this not the function
 	private Boolean isGameOver;
-
+    
     //test function 
     private void playerState(Colour player)
     {

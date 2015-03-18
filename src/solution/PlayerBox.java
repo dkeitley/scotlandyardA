@@ -18,9 +18,9 @@ class PlayerBox extends JPanel
 	
 	public PlayerBox(boolean playIsMrX)
 	{
-		this.numTaxi = new JTextField();
-		this.numBus = new JTextField();
-		this.numUnderground = new JTextField();
+		this.numTaxi = new JTextField("11");
+		this.numBus = new JTextField("8");
+		this.numUnderground = new JTextField("4");
 		this.numDouble = new JTextField();
 		this.numSecret = new JTextField();
 		this.mrX = playIsMrX;

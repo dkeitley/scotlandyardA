@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 
-class WelcomeView
+class WelcomeView extends JFrame
 {
 	private JButton newGame;
 	private JButton loadGame;
@@ -21,12 +21,11 @@ class WelcomeView
 	
 	void run()
 	{
-		JFrame w = new JFrame();
-    	w.setDefaultCloseOperation(w.EXIT_ON_CLOSE);
-		w.add(display());
-		w.pack();
-		w.setLocationByPlatform(true);
-		w.setVisible(true);	
+    	setDefaultCloseOperation(EXIT_ON_CLOSE);
+		add(display());
+		pack();
+		setLocationByPlatform(true);
+		setVisible(true);	
 	}
 	
 	private Box display()

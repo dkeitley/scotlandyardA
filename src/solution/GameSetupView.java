@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 
-class GameSetupView
+class GameSetupView extends JFrame
 {
 	
 	private JButton addPlayer;
@@ -16,7 +16,7 @@ class GameSetupView
 	private Box players;
 	private JScrollPane scrollable;
 	private java.util.List<PlayerBox> playerBoxes;
-	private JFrame w = new JFrame();
+	private JFrame w;
 	 
 	public GameSetupView()
 	{
@@ -30,13 +30,13 @@ class GameSetupView
 	
 	public void run()
 	{
-		w.setBackground(new Color(255, 255, 255));
-    	w.setDefaultCloseOperation(w.EXIT_ON_CLOSE);
+		setBackground(new Color(255, 255, 255));
+    	setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.scrollable = display();
-		w.add(this.scrollable);
-		w.pack();
-		w.setLocationByPlatform(true);
-		w.setVisible(true);
+		add(this.scrollable);
+		pack();
+		setLocationByPlatform(true);
+		setVisible(true);
 	}
 	
 	private JScrollPane display()
@@ -73,9 +73,9 @@ class GameSetupView
 		options.setLayout(new GridLayout(0, 2, 10, 10));
 		options.add(new JLabel("Game Options: "));
 		options.add(new JLabel(""));
-		options.add(new JLabel("Number of rounds: "));
+		options.add(new JLabel("Number of rounds: ", SwingConstants.RIGHT));
 		options.add(numRounds);
-		options.add(new JLabel("MrX reveal rounds (enter as comma sperated list): "));
+		options.add(new JLabel("MrX reveal rounds (enter as comma sperated list): ", SwingConstants.RIGHT));
 		options.add(showRounds);
 		return options;
 	}
@@ -127,7 +127,7 @@ class GameSetupView
 	
 	public void displayErrorMessage(String errorMessage) 
 	{
-		JOptionPane.showMessageDialog(w, errorMessage);
+		JOptionPane.showMessageDialog(this, errorMessage);
 	}	
 }
 

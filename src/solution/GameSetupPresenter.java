@@ -12,9 +12,8 @@ class GameSetupPresenter
 	public static void main(String[] args)
 	{
 		GameSetupView view2 = new GameSetupView();
-		SwingUtilities.invokeLater(view2::run);
-		
 		GameSetupPresenter presenter = new GameSetupPresenter(view2);
+		view2.run();
 	}
 	
 	private GameSetupView view;
@@ -34,7 +33,14 @@ class GameSetupPresenter
 			String action = event.getActionCommand();
 			if(action.equals("addPlayer"))
 			{
-				view.addPlayerBox();
+				if(view.getPlayerBoxes().size() < 6)
+				{
+					view.addPlayerBox();
+				}
+				else
+				{
+					view.displayErrorMessage("You can have a maximum of 6 players");
+				}
 			}
 			else if(action.equals("startGame"))
 			{
@@ -51,7 +57,7 @@ class GameSetupPresenter
 				}
 				else
 				{
-					view.displayErrorMessage("Oops. looks like you entered something wrong. Please try again");
+					view.displayErrorMessage("Oops. Looks like you entered something wrong. Please try again");
 				}
 				
 			}
@@ -60,8 +66,8 @@ class GameSetupPresenter
 	
 	private int getStartLocation(Colour colour)
 	{
-		int[] mrXPossibleLocations = {1,2,3,4,5,6};
-		int[] detectivePossibleLocations = {7,8,9,10,11,12,13,14,15};
+		int[] mrXPossibleLocations = {146,166,51,104,127,106,45,172,35,132,78,170,71};
+		int[] detectivePossibleLocations = {155,50,103,94,26,29,91,141,53,138,174,13,112,117,34};
 		int[] possibleLocations;
 		if(colour.equals(Colour.Black)) possibleLocations =  mrXPossibleLocations;
 		else possibleLocations = detectivePossibleLocations;
@@ -96,6 +102,7 @@ class GameSetupPresenter
 	
 	private boolean validateInput()
 	{
+		Set<Colour> colours = new HashSet();
 		for (PlayerBox box : view.getPlayerBoxes())
 		{
 			if(!validateInt(box.getNumTaxi())) return false;
@@ -106,13 +113,18 @@ class GameSetupPresenter
 				if(!validateInt(box.getNumDouble())) return false;
 				if(!validateInt(box.getNumSecret())) return false;
 			}
+			if(colours.contains(box.getColour())) return false;
+			else colours.add(box.getColour());
 		}
 		if(!validateInt(view.getNumRounds())) return false;
 		String[] rounds = view.getShowRounds().split(" , | ,|, |,");
+		int maxShowRound = 0;
 		for(String round : rounds)
 		{
 			if(!validateInt(round)) return false;
+			else if(maxShowRound < Integer.parseInt(round)) maxShowRound = Integer.parseInt(round);
 		}
+		if(Integer.parseInt(view.getNumRounds()) < maxShowRound ) return false;
 		return true;
 	}
 	
@@ -120,8 +132,8 @@ class GameSetupPresenter
 	{
 		try
 		{
-			Integer.parseInt(num);
-			return true;
+			if(Integer.parseInt(num) >= 0) return true;
+			else return false;
 		}
 		catch(Exception e)
 		{

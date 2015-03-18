@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
 
-class WelcomeView
+class WelcomeView extends JFrame
 {
 	private JButton newGame;
 	private JButton loadGame;
@@ -21,12 +21,11 @@ class WelcomeView
 	
 	void run()
 	{
-		JFrame w = new JFrame();
-    	w.setDefaultCloseOperation(w.EXIT_ON_CLOSE);
-		w.add(display());
-		w.pack();
-		w.setLocationByPlatform(true);
-		w.setVisible(true);	
+    	setDefaultCloseOperation(EXIT_ON_CLOSE);
+		add(display());
+		pack();
+		setLocationByPlatform(true);
+		setVisible(true);	
 	}
 	
 	private Box display()
@@ -57,6 +56,15 @@ class WelcomeView
 		return buttons;
 	}
 	
+	private JButton button(String buttonText)
+	{
+		Font font = new Font("TimesRoman", Font.PLAIN, 20);
+		JButton button = new JButton(buttonText);
+		button.setFont(font);
+		button.setActionCommand(buttonText);
+		return button; 
+	}
+	
 	public void addNewGameButtonListner(ActionListener listener)
 	{
 		this.newGame.addActionListener(listener);
@@ -70,15 +78,6 @@ class WelcomeView
 	public void addQuitButtonListner(ActionListener listener)
 	{
 		this.quit.addActionListener(listener);
-	}
-	
-	private JButton button(String buttonText)
-	{
-		Font font = new Font("TimesRoman", Font.PLAIN, 20);
-		JButton button = new JButton(buttonText);
-		button.setFont(font);
-		button.setActionCommand(buttonText);
-		return button; 
 	}
 }
 

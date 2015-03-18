@@ -15,7 +15,7 @@ class WelcomePresenter
 		 
 	}
 	
-	WelcomeView view;
+	private WelcomeView view;
 	
 	public WelcomePresenter(WelcomeView view)
 	{
@@ -33,7 +33,10 @@ class WelcomePresenter
 			String action = event.getActionCommand();
 			if(action.equals("Start a new game"))
 			{
-				System.out.println("start");
+				GameSetupView setupView = new GameSetupView();
+				GameSetupPresenter presenter = new GameSetupPresenter(setupView);
+				setupView.run();
+				view.dispose();
 			}
 			else if(action.equals("Load a saved game"))
 			{
