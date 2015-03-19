@@ -293,6 +293,7 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
     {
     	int location = colourToLocation.get(player);
     	List<MoveDouble> possibleMoves = new ArrayList();
+    	if(currentRound + 2 == showRounds.size()) return possibleMoves;
     	List<MoveTicket> singleMoves = singleMoves(location, player);
     	if(player.equals(Colour.valueOf("Black")))
     	{

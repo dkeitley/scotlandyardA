@@ -5,6 +5,7 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.*;
+import java.util.*;
 
 class PlayerBox extends JPanel
 {
@@ -18,12 +19,23 @@ class PlayerBox extends JPanel
 	
 	public PlayerBox(boolean playIsMrX)
 	{
-		this.numTaxi = new JTextField("11");
-		this.numBus = new JTextField("8");
-		this.numUnderground = new JTextField("4");
-		this.numDouble = new JTextField();
-		this.numSecret = new JTextField();
 		this.mrX = playIsMrX;
+		if(playIsMrX)
+		{
+			this.numTaxi = new JTextField("15");
+			this.numBus = new JTextField("15");
+			this.numUnderground = new JTextField("15");
+			this.numDouble = new JTextField("2");
+			this.numSecret = new JTextField("5");
+		}
+		else
+		{
+			this.numTaxi = new JTextField("11");
+			this.numBus = new JTextField("8");
+			this.numUnderground = new JTextField("4");
+			this.numDouble = new JTextField();
+			this.numSecret = new JTextField();
+		}
 		this.setBackground(new Color(169, 169, 169));
 		//this.add(graphic());
 		this.add(options());
@@ -58,7 +70,7 @@ class PlayerBox extends JPanel
 		}
 		else
 		{
-			this.colourOptions = new JComboBox(Colour.values());
+			this.colourOptions = new JComboBox(Arrays.copyOfRange(Colour.values(), 1, 6));
 		}
 		options.add(this.colourOptions);
 		return;

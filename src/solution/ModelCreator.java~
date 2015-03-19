@@ -17,9 +17,9 @@ class ModelCreator
 		model.join(new PlayerImplementation(), Colour.Red, 11, ticketMapDetective1);
 		model.join(new PlayerImplementation(), Colour.Blue, 21, ticketMapDetective2);
 		
-		GameView view = new GameView()
+		/*GameView view = new GameView();
 		GameViewController controller = new GameViewController(model, view);
-		controller.run()
+		controller.run();*/
 	}
 		
 	

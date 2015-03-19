@@ -22,8 +22,8 @@ class GameSetupView extends JFrame
 	{
 		addPlayer = new JButton("Add player");
 		startGame = new JButton("Start Game");
-		this.numRounds = new JTextField();
-		this.showRounds = new JTextField();
+		this.numRounds = new JTextField("24");
+		this.showRounds = new JTextField("3,8,13,18,24"); //check
 		this.players = Box.createVerticalBox();
 		this.playerBoxes = new java.util.ArrayList();
 	}
