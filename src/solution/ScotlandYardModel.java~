@@ -20,6 +20,7 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
 	private int currentRound; 
 	private List<Spectator> spectators;
 	private int lastKnownLocation;
+	private List<MoveTicket> mrXMoves;
 	//so part way through a trun a game can't end - all internal refrences to 
 	//checking if a game is over should refer to this not the function
 	private Boolean isGameOver;
@@ -61,6 +62,7 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
 		colourToTickets = new HashMap<Colour,Map<Ticket,Integer>>();
 		colourToLocation = new HashMap<Colour, Integer>();
 		spectators = new ArrayList<Spectator>();
+		mrXMoves = new ArrayList<MoveTicket>();
 		currentPlayer = Colour.valueOf("Black");
 		currentRound = 0;
 		lastKnownLocation = 0;
@@ -103,6 +105,7 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
     	if(player.equals(Colour.Black))
     	{
     		currentRound++;
+    		mrXMoves.add(move);
     	}
     	else
     	{
@@ -393,12 +396,26 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
         }
         return empty;
     }
-
+	
+	//returns detectives location or mrX lastknown location
     @Override
     public int getPlayerLocation(Colour colour) 
     {
     	if(colour.equals(Colour.Black)) return lastKnownLocation;
     	else return colourToLocation.get(colour);
+    }
+    
+    //returns mrX actual location
+    public int getMrXLocation()
+    {
+    	return colourToLocation.get(Colour.Black);
+    }
+    
+    //returns moveTicket representing move mrX made on roundNum
+    public MoveTicket mrXMoves(int roundNum)
+    {
+    	if(mrXMoves.size() < roundNum) return null; 
+    	else return mrXMoves.get(roundNum - 1);
     }
 
     @Override

@@ -4,7 +4,7 @@ import java.util.*;
 
 class ModelCreator
 {	
-	public static void main(String[] args)
+	public ScotlandYardModel getModel()
 	{
 		//number of detectives; show rounds as a comma seperated list
 		ScotlandYardModel model = createModel(2, "2,5,8");
@@ -17,9 +17,18 @@ class ModelCreator
 		model.join(new PlayerImplementation(), Colour.Red, 11, ticketMapDetective1);
 		model.join(new PlayerImplementation(), Colour.Blue, 21, ticketMapDetective2);
 		
-		/*GameView view = new GameView();
-		GameViewController controller = new GameViewController(model, view);
-		controller.run();*/
+		int numTurns = 6;
+		for(int i = 0; i < numTurns; i++)
+		{
+			List<Move> moves = model.validMoves(model.getCurrentPlayer());
+			Move move = moves.get(0);
+			if (move instanceof MoveTicket) model.play((MoveTicket) move);
+    		if (move instanceof MoveDouble) model.play((MoveDouble) move);
+    		if (move instanceof MovePass) model.play((MovePass) move);
+			model.nextPlayer();
+		}
+		
+		return model;
 	}
 		
 	
@@ -53,7 +62,7 @@ class ModelCreator
 	private static List<Boolean> createShowRoundsList(String showRounds)
 	{
 		String[] rounds = showRounds.split(" , | ,|, |,");
-		Boolean[] roundsList = new Boolean[25]; // 24 rounds 
+		Boolean[] roundsList = new Boolean[11]; // 10 rounds 
 		Arrays.fill(roundsList, false);
 		for(String round : rounds)
 		{
