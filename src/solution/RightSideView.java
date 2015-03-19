@@ -153,7 +153,9 @@ public class RightSideView extends JPanel{
 	}
 
 	public int getFirstLocation() {
+		System.out.println("jjhdlkj");
 		int target = (int)firstMoveLocationsBox.getSelectedItem();
+		System.out.println("ddfdsdfgfthhyuiyjgfdsa"+target);
 		return target;
 	}
 

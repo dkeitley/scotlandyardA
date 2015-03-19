@@ -26,6 +26,9 @@ public class GameView {
 	
 	public void createView(LeftSideView lsv, MapView map, RightSideView rsv, MrXMovesBar movesBar) {
 		mainBox = Box.createHorizontalBox();
+		this.rsv = rsv;
+		this.map = map;
+		this.movesBar = movesBar;
 		mainBox.add(lsv);
 		mainBox.add(map);
 		mainBox.add(rsv);
