@@ -4,19 +4,6 @@ import java.util.*;
 
 class ModelCreator
 {	
-	public ScotlandYardModel getModel()
-	{
-		//number of detectives; show rounds as a comma seperated list
-		ScotlandYardModel model = createModel(2, "2,5,8");
-		//are you mrX?; numTaxi; numBus; numUnderground; numDouble; numSecret
-		Map<Ticket, Integer> ticketMapMrX = createTicketMap(true, 5,4,8,1,3);
-		Map<Ticket, Integer> ticketMapDetective1 = createTicketMap(false, 7,2,6,0,0);
-		Map<Ticket, Integer> ticketMapDetective2 = createTicketMap(false, 1,2,3,0,0);
-		// player; colour; start location; ticket map
-		model.join(new PlayerImplementation(), Colour.Black, 1, ticketMapMrX);
-		model.join(new PlayerImplementation(), Colour.Red, 11, ticketMapDetective1);
-		model.join(new PlayerImplementation(), Colour.Blue, 21, ticketMapDetective2);
-		
 		int numTurns = 6;
 		for(int i = 0; i < numTurns; i++)
 		{
