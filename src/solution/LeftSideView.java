@@ -23,6 +23,9 @@ class LeftSideView extends JPanel {
 				table = ticketsTable();
 			} else {
 				table = new JTable(5,1);
+				table.getColumn("A").setHeaderValue("Tickets Available:");
+				table.setFillsViewportHeight(true);
+				
 			}
 			colourToTable.put(c,table);
 			box.add(new JScrollPane(table));

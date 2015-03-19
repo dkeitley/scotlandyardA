@@ -29,8 +29,8 @@ public class GameViewController {
 	private Set<Ticket> secondMoveTickets;
 	private Set<Integer> secondMoveLocations;
 
-	private ActionListener firstListener;
-	private ActionListener secondListener;
+	private ItemListener firstListener;
+	private ItemListener secondListener;
 
 	
 	public GameViewController(ScotlandYardModel model, GameView view) {
@@ -155,18 +155,42 @@ public class GameViewController {
 	class GoButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 		
-			int target = view.rsv.getFirstLocation();
-			Ticket ticket = view.rsv.getFirstTicket();
+			int firstTarget = view.rsv.getFirstLocation();
+			Ticket firstTicket = view.rsv.getFirstTicket();
 			
-			MoveTicket move = new MoveTicket(currentPlayer,target,ticket);
-			model.play(move);
-			view.lsv.setNumTickets(currentPlayer,ticket,model.getPlayerTickets(currentPlayer,ticket));
+			int secondTarget = 0;
+			Ticket secondTicket = null;
+			
+			if(view.rsv.secondMoveLocationsBox.isVisible()) {
+				secondTarget = view.rsv.getSecondLocation();
+				secondTicket = view.rsv.getSecondTicket();
+				MoveTicket firstMove = new MoveTicket(currentPlayer,firstTarget,firstTicket);
+				MoveTicket secondMove = new MoveTicket(currentPlayer,secondTarget,secondTicket);
+				MoveDouble move  = new MoveDouble(currentPlayer,firstMove,secondMove);
+				model.play(move);
+				System.out.println(model.getPlayerTickets(currentPlayer,secondTicket));
+				System.out.println(model.getPlayerTickets(currentPlayer,Ticket.DoubleMove));
+				view.lsv.setNumTickets(currentPlayer,firstTicket,model.getPlayerTickets(currentPlayer,firstTicket));
+				view.lsv.setNumTickets(currentPlayer,secondTicket,model.getPlayerTickets(currentPlayer,secondTicket));
+				view.lsv.setNumTickets(currentPlayer,Ticket.DoubleMove,
+				model.getPlayerTickets(currentPlayer,Ticket.DoubleMove));
+			} else {
+				MoveTicket move = new MoveTicket(currentPlayer,firstTarget,firstTicket);
+				model.play(move);
+				view.lsv.setNumTickets(currentPlayer,firstTicket,model.getPlayerTickets(currentPlayer,firstTicket));
+				
+			}
+			
+			
 			view.rsv.hideSecondMove();
 			if(currentPlayer.equals(Colour.Black)) {
 				int currentRound = model.getRound();
 				Boolean showRound = model.getRounds().get(currentRound);
 				int location = model.getPlayerLocation(currentPlayer);
-				view.movesBar.addMrXMove(ticket,showRound,currentRound,location);
+				view.movesBar.addMrXMove(firstTicket,showRound,currentRound,firstTarget);
+				if(view.rsv.secondMoveLocationsBox.isPopupVisible()) {
+					view.movesBar.addMrXMove(secondTicket,showRound,currentRound,secondTarget);
+				}
 			}
 
 			view.lsv.setLocation(currentPlayer,model.getPlayerLocation(currentPlayer));
@@ -178,17 +202,20 @@ public class GameViewController {
 			validMoveTickets = createMoveTickets(validMoves);
 			validDoubleMoves = createDoubleMoves(validMoves);
 		
-			
+			view.rsv.firstMoveLocationsBox.removeItemListener(firstListener);
 			view.rsv.firstMoveLocationsBox.removeAllItems();
+			view.rsv.addFirstMoveLocationsListener(firstListener);
 			view.rsv.firstMoveTicketBox.removeAllItems();
+			
 			updateFirstMoves();
+			
 			
 		}
 	
 	}
 
-	class FirstMoveLocationListener implements ActionListener {
-		public void actionPerformed(ActionEvent event) {
+	class FirstMoveLocationListener implements ItemListener {
+		public void itemStateChanged(ItemEvent event) {
 		
 			validMoveTickets = createMoveTickets(validMoves);
 			int chosenLocation = view.rsv.getFirstLocation();
@@ -206,8 +233,8 @@ public class GameViewController {
 		}
 	}
 	
-	class SecondMoveLocationListener implements ActionListener {
-		public void actionPerformed(ActionEvent event) {
+	class SecondMoveLocationListener implements ItemListener {
+		public void itemStateChanged(ItemEvent event)  {
 			int firstLocation = view.rsv.getFirstLocation();
 			int secondLocation = view.rsv.getSecondLocation();			
 			Set<Ticket> possibleTickets = new HashSet<Ticket>();
@@ -229,11 +256,11 @@ public class GameViewController {
 	class ClearButtonListener implements ActionListener {
 		public void actionPerformed(ActionEvent event) {
 			
-			view.rsv.secondMoveLocationsBox.removeActionListener(secondListener);
+			view.rsv.secondMoveLocationsBox.removeItemListener(secondListener);
 			view.rsv.secondMoveLocationsBox.removeAllItems();
 			view.rsv.secondMoveTicketBox.removeAllItems();
 			view.rsv.firstMoveTicketBox.removeAllItems();
-			view.rsv.firstMoveLocationsBox.removeActionListener(firstListener);
+			view.rsv.firstMoveLocationsBox.removeItemListener(firstListener);
 			view.rsv.firstMoveLocationsBox.removeAllItems();
 			
 			updateFirstMoves();

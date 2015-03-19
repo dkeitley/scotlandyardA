@@ -110,12 +110,12 @@ public class RightSideView extends JPanel{
 		doubleMoveButton.addActionListener(listener);
 	}
 
-	public void addFirstMoveLocationsListener(ActionListener listener) {
-		firstMoveLocationsBox.addActionListener(listener);
+	public void addFirstMoveLocationsListener(ItemListener listener) {
+		firstMoveLocationsBox.addItemListener(listener);
 	}
 
-	public void addSecondMoveLocationsListener(ActionListener listener) {
-		secondMoveLocationsBox.addActionListener(listener);
+	public void addSecondMoveLocationsListener(ItemListener listener) {
+		secondMoveLocationsBox.addItemListener(listener);
 	}
 
 	public void addSaveButtonListener(ActionListener listener) {
