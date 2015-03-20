@@ -19,14 +19,8 @@ class MrXMovesBar extends JPanel {
 	}
 
 
-	public void addMrXMove(Ticket ticket, Boolean showRound, int currentRound, int location) {
-		String text;
-		if(showRound == true) {
-			text = Integer.toString(location) + ", " + ticket.toString();
-		} else {
-			text = ticket.toString();
-		}
-		table.setValueAt(ticket,currentRound-1,0);
+	public void addMrXMove(String text, int round) {
+		table.setValueAt(text,round-1,0);
 	}
 	/* TASKS
 	 * highlight the show rounds with a different colour

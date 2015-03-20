@@ -464,6 +464,16 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
     {
         return currentRound;
     }
+    
+    public List<Player> getPlayerList()
+    {
+    	List<Player> players = new ArrayList();
+    	for(Colour colour : orderOfPlay)
+    	{
+    		players.add(colourToPlayer.get(colour));
+    	}
+    	return players;
+    }
 
     @Override
     public List<Boolean> getRounds() 
