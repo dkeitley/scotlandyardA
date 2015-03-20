@@ -70,5 +70,18 @@ public class GameView {
 	
 		}
    }
+   
+   class PassListener implements ActionListener {	
+  	 private BlockingQueue<String> queue;
+		
+   	 public PassListener(BlockingQueue queue) {
+			this.queue = queue;
+	 }
+   	 public void actionPerformed(ActionEvent event) {
+   			queue.add("false");
+   			queue.add("-1");
+   			queue.add("Pass");
+   	}
+   }
 
 }

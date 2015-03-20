@@ -15,23 +15,8 @@ public class GameViewController implements Spectator{
 
 	private ScotlandYardModel model;
 	private GameView view;
-	
 	private BlockingQueue<String> queue;
-
-	private Colour currentPlayer;
-	//don't think i need a lot of these
 	private Set<Move> validMoves;
-	private Set<MoveTicket> validMoveTickets;
-	private Set<MoveDouble> validDoubleMoves; 
-
-	private Set<Move> firstMoves;
-	private Set<Move> secondMoves;
-
-	private Set<Integer> firstMoveLocations;
-	private Set<Ticket> firstMoveTickets;
-	private Set<Ticket> secondMoveTickets;
-	private Set<Integer> secondMoveLocations;
-
 	private ItemListener firstListener;
 	private ItemListener secondListener;
 
@@ -49,14 +34,6 @@ public class GameViewController implements Spectator{
 		this.view = view;
 		
 		queue = new LinkedBlockingQueue<String>();
-		
-
-		firstMoveLocations = new HashSet<Integer>();
-		firstMoveTickets = new HashSet<Ticket>();
-	 	secondMoveTickets = new HashSet<Ticket>();
-		secondMoveLocations = new HashSet<Integer>();
-		firstMoves = new HashSet<Move>();
-		secondMoves = new HashSet<Move>();
 	}
 
 	public void run() {
@@ -73,6 +50,7 @@ public class GameViewController implements Spectator{
 		
 		//create a single function for this?
 		rsv.addGoButtonListener(view.new PlayListener(queue));
+		rsv.addPassButtonListener(view.new PassListener(queue));
 
 		firstListener = new FirstMoveLocationListener();
 		secondListener = new SecondMoveLocationListener();
@@ -108,31 +86,10 @@ public class GameViewController implements Spectator{
 	}
 
 	private void initialiseRSV(RightSideView rsv) {
-		currentPlayer = model.getCurrentPlayer();
 		
-		validMoves = new HashSet<Move>(model.validMoves(currentPlayer));
+		validMoves = new HashSet<Move>();
 		
-		validMoveTickets = createMoveTickets(validMoves);
-		validDoubleMoves = createDoubleMoves(validMoves);
 		
-		for(MoveTicket moveTicket:validMoveTickets) {
-			firstMoveLocations.add(moveTicket.target);
-			firstMoveTickets.add(moveTicket.ticket);
-		}
-		
-		for(MoveDouble doubleMove:validDoubleMoves) {
-			firstMoves.add(doubleMove.moves.get(0));
-			secondMoves.add(doubleMove.moves.get(1));
-		}
-
-		Set<MoveTicket> validSecondMoveTickets = createMoveTickets(secondMoves);	
-		
-		for(MoveTicket ticket2: validSecondMoveTickets) {
-			secondMoveLocations.add(ticket2.target);
-			secondMoveTickets.add(ticket2.ticket);
-		}
-
-		rsv.setFirstMoveLocations(firstMoveLocations);
 		rsv.hideSecondMove();
 		rsv.setRoundNum(1);
 	}
@@ -150,7 +107,7 @@ public class GameViewController implements Spectator{
 	}
 
 	//creates a set of MoveDoubles from a set of Moves
-	private Set<MoveDouble> createDoubleMoves(java.util.Set<Move> moves) {
+	private Set<MoveDouble> createDoubleMoves(Set<Move> moves) {
 		Set<MoveDouble> doubleMoves = new HashSet<MoveDouble>();
 		for(Move move:moves) {
 			if(move instanceof MoveDouble) {
@@ -161,14 +118,20 @@ public class GameViewController implements Spectator{
 		return doubleMoves;
 	}
 	
-	//updates the values in the first move (locations) combo boxes
-	private void updateFirstMoves(Set<Integer> targets) {
-		view.rsv.setFirstMoveLocations(targets);
-	}
-	
 	public void notify(Move move)
 	{
-		//upadte code
+		update(move);
+	}
+	
+	private void update(Move move)
+	{
+		updateLSV();
+		updateRSV(move);
+		return;
+	}
+	
+	private void updateLSV()
+	{
 		List<Colour> colours = model.getPlayers();
 		String[] detectiveTickets = {"Taxi", "Bus", "Underground"};
 		String[] mrXTickets = {"Taxi", "Bus", "Underground", "SecretMove", "DoubleMove"};
@@ -184,9 +147,13 @@ public class GameViewController implements Spectator{
 			}
 			view.lsv.setLocation(colour, model.getPlayerLocation(colour));
 		}
+		return;
+	}
+	
+	private void updateRSV(Move move)
+	{
 		//NEED TO SORT ROUND NUM OUT
 		view.rsv.setRoundNum(model.getRound()+1);
-
 		for(int i = 1; i <= model.getRound() ; i++) 
 		{
 			MoveTicket moveTicket = model.mrXMoves(i);
@@ -201,34 +168,46 @@ public class GameViewController implements Spectator{
 
 	public Move getPlayerMove(List<Move> moves) 
 	{
-		//update combo boxes
+		updateComboBoxes(moves);
+		return getFromQueue();
+	}
+	
+	private void updateComboBoxes(List<Move> moves)
+	{
 		validMoves = new HashSet<Move>(moves);
+		view.rsv.displayMoveControls();
 		view.rsv.hideSecondMove();
+		view.rsv.passButton.setVisible(false);
 		if(model.getCurrentPlayer().equals(Colour.Black)) view.rsv.doubleMoveButton.setVisible(true);
 		else view.rsv.doubleMoveButton.setVisible(false);
 		view.rsv.firstMoveLocationsBox.removeItemListener(firstListener);
 		view.rsv.firstMoveLocationsBox.removeAllItems();
 		view.rsv.addFirstMoveLocationsListener(firstListener);
 		view.rsv.firstMoveTicketBox.removeAllItems();
-		
 		Set<Integer> targets = new HashSet<Integer>();
-		validDoubleMoves.clear();
-		System.out.println(validDoubleMoves.size());
-		for(Move move:moves) {
-			if(move instanceof MoveTicket) {
-				MoveTicket moveTicket = (MoveTicket) move;
-				targets.add(moveTicket.target);
-			} else if (move instanceof MoveDouble) {
-				MoveDouble doubleMove = (MoveDouble) move;
-				validDoubleMoves.add(doubleMove);
-			}
+		for(MoveTicket moveTicket : createMoveTickets(validMoves)) {
+			targets.add(moveTicket.target);
 		}
-		updateFirstMoves(targets); 
-		
+		if(targets.size() == 0) {
+				view.rsv.hideMoveControls();
+				view.rsv.passButton.setVisible(true);
+		}
+		view.rsv.setFirstMoveLocations(targets);
+		view.rsv.currentPlayer.setText("Current Player: " + model.getCurrentPlayer());
+		return;
+	}
+	
+	private Move getFromQueue()
+	{
 		try
 		{
 			String isDoubleMove = queue.take();
-			MoveTicket move1 = new MoveTicket(model.getCurrentPlayer(), Integer.parseInt(queue.take()), Ticket.valueOf(queue.take())); 
+			int target = Integer.parseInt(queue.take());
+			if(target == -1) {
+				queue.take();
+				return new MovePass(model.getCurrentPlayer());
+			}
+			MoveTicket move1 = new MoveTicket(model.getCurrentPlayer(), target, Ticket.valueOf(queue.take())); 
 			if(isDoubleMove == "true")
 			{
 				MoveTicket move2 = new MoveTicket(model.getCurrentPlayer(), Integer.parseInt(queue.take()), Ticket.valueOf(queue.take()));
@@ -244,73 +223,10 @@ public class GameViewController implements Spectator{
 			throw new Error(e);
 		}
 	}
-		
-		
-		
-		/*	int firstTarget = view.rsv.getFirstLocation();
-			Ticket firstTicket = view.rsv.getFirstTicket();
-			
-			int secondTarget = 0;
-			Ticket secondTicket = null;
-			
-			if(view.rsv.secondMoveLocationsBox.isVisible()) {
-				secondTarget = view.rsv.getSecondLocation();
-				secondTicket = view.rsv.getSecondTicket();
-				MoveTicket firstMove = new MoveTicket(currentPlayer,firstTarget,firstTicket);
-				MoveTicket secondMove = new MoveTicket(currentPlayer,secondTarget,secondTicket);
-				MoveDouble move  = new MoveDouble(currentPlayer,firstMove,secondMove);
-				model.play(move);
-				System.out.println(model.getPlayerTickets(currentPlayer,secondTicket));
-				System.out.println(model.getPlayerTickets(currentPlayer,Ticket.DoubleMove));
-				view.lsv.setNumTickets(currentPlayer,firstTicket,model.getPlayerTickets(currentPlayer,firstTicket));
-				view.lsv.setNumTickets(currentPlayer,secondTicket,model.getPlayerTickets(currentPlayer,secondTicket));
-				view.lsv.setNumTickets(currentPlayer,Ticket.DoubleMove,
-				model.getPlayerTickets(currentPlayer,Ticket.DoubleMove));
-			} else {
-				MoveTicket move = new MoveTicket(currentPlayer,firstTarget,firstTicket);
-				model.play(move);
-				view.lsv.setNumTickets(currentPlayer,firstTicket,model.getPlayerTickets(currentPlayer,firstTicket));
-				
-			}
-			
-			//put in new function
-			view.rsv.hideSecondMove();
-			if(currentPlayer.equals(Colour.Black)) {
-				int currentRound = model.getRound();
-				List<Boolean> showRounds = model.getRounds();
-			
-				//make new function
-				for(int i=1;i<currentRound;i++) {
-					MoveTicket moveTicket = model.mrXMoves(i);
-					view.movesBar.addMrXMove(moveTicket.ticket,showRounds.get(i),i,moveTicket);
-				}
-			}
-
-			view.lsv.setLocation(currentPlayer,model.getPlayerLocation(currentPlayer));
-			view.rsv.setRoundNum(model.getRound());
-			
-			model.nextPlayer();
-			currentPlayer = model.getCurrentPlayer();
-			validMoves = new HashSet<Move>(model.validMoves(currentPlayer));
-			validMoveTickets = createMoveTickets(validMoves);
-			validDoubleMoves = createDoubleMoves(validMoves);
-		
-			view.rsv.firstMoveLocationsBox.removeItemListener(firstListener);
-			view.rsv.firstMoveLocationsBox.removeAllItems();
-			view.rsv.addFirstMoveLocationsListener(firstListener);
-			view.rsv.firstMoveTicketBox.removeAllItems();
-			
-			updateFirstMoves();
-			
-			
-		}
-	
-	}*/
 
 	class FirstMoveLocationListener implements ItemListener {
 		public void itemStateChanged(ItemEvent event) {
-			//NO WE DON'T WANT VALIDMOVES
-			validMoveTickets = createMoveTickets(validMoves);
+			Set<MoveTicket> validMoveTickets = createMoveTickets(validMoves);
 			
 			
 			int chosenLocation = view.rsv.getFirstLocation();
@@ -321,7 +237,6 @@ public class GameViewController implements Spectator{
 					possibleTickets.add(moveTicket.ticket);
 				}
 			}
-			
 			view.rsv.firstMoveTicketBox.removeAllItems();
 			view.rsv.setFirstMoveTickets(possibleTickets);
 		}
@@ -332,6 +247,7 @@ public class GameViewController implements Spectator{
 			int firstLocation = view.rsv.getFirstLocation();
 			int secondLocation = view.rsv.getSecondLocation();			
 			Set<Ticket> possibleTickets = new HashSet<Ticket>();
+			Set<MoveDouble> validDoubleMoves = createDoubleMoves(validMoves);
 			for(MoveDouble moveDouble: validDoubleMoves) {
 				MoveTicket firstTicket = (MoveTicket) moveDouble.moves.get(0);
 				MoveTicket secondTicket = (MoveTicket) moveDouble.moves.get(1);
@@ -357,7 +273,7 @@ public class GameViewController implements Spectator{
 			view.rsv.firstMoveLocationsBox.removeItemListener(firstListener);
 			view.rsv.firstMoveLocationsBox.removeAllItems();
 			
-			//updateFirstMoves();
+
 
 			view.rsv.addFirstMoveLocationsListener(firstListener);
 			view.rsv.addSecondMoveLocationsListener(secondListener);
@@ -369,6 +285,7 @@ public class GameViewController implements Spectator{
 		public void actionPerformed(ActionEvent event) {
 			int location = view.rsv.getFirstLocation();
 			Set<Integer> possibleLocations = new HashSet<Integer>();
+			Set<MoveDouble> validDoubleMoves = createDoubleMoves(validMoves);
 			for(MoveDouble moveDouble: validDoubleMoves) {
 				MoveTicket firstMove = (MoveTicket) moveDouble.moves.get(0);
 				if(firstMove.target == location) {
@@ -383,7 +300,3 @@ public class GameViewController implements Spectator{
 	}
 
 }
-
-
-	
-

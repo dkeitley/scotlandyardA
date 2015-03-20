@@ -12,6 +12,9 @@ public class RightSideView extends JPanel{
 	private JLabel move2;
 	private JLabel moveto;
 	private JLabel usingTicket;
+	public JLabel move1;
+	public JLabel moveto1;
+	public JLabel usingTicket1;
 	public JComboBox firstMoveLocationsBox;
 	public JComboBox secondMoveLocationsBox;
 	public JComboBox firstMoveTicketBox;
@@ -20,13 +23,19 @@ public class RightSideView extends JPanel{
 	public JButton goButton;
 	public JButton saveButton;
 	public JButton clearButton;
+	public JLabel currentPlayer;
+	public JButton passButton;
 	
 	public RightSideView() {
 	
 		Box box = Box.createVerticalBox();
 		box.add(roundBox());
+		currentPlayer = new JLabel("Current Player: Black");
+		box.add(currentPlayer);
 		box.add(moveForm(moveLabels(),moveFields()));
 		box.add(controlButtons());
+		passButton = new JButton("Pass");
+		box.add(passButton);
 		this.add(box);
 	}
 
@@ -41,10 +50,16 @@ public class RightSideView extends JPanel{
 		move2 = new JLabel("Move 2:");
 		moveto = new JLabel("Move to: ");
 		usingTicket = new JLabel("Using ticket: ");
+		
+		move1 = new JLabel("Move 1:");
+		moveto1 = new JLabel("Move to: ");
+		usingTicket1 = new JLabel("Using ticket: ");
+		
 		Box box = Box.createVerticalBox();
-		box.add(new JLabel("Move 1:"));
-		box.add(new JLabel("Move to: "));
-		box.add(new JLabel("Using ticket: "));
+		
+		box.add(move1);
+		box.add(moveto1);
+		box.add(usingTicket1);
 		box.add(move2);
 		box.add(moveto);
 		box.add(usingTicket);
@@ -97,6 +112,9 @@ public class RightSideView extends JPanel{
 	public void displaySecondMove() {
 		secondMoveLocationsBox.setVisible(true);
 		secondMoveTicketBox.setVisible(true);
+		move2.setVisible(true);
+		moveto.setVisible(true);
+		usingTicket.setVisible(true);
 		
 	}
 
@@ -106,6 +124,34 @@ public class RightSideView extends JPanel{
 		move2.setVisible(false);
 		moveto.setVisible(false);
 		usingTicket.setVisible(false);
+	}
+	
+	public void hideMoveControls() {
+		hideSecondMove();
+		goButton.setVisible(false);
+		clearButton.setVisible(false);
+		saveButton.setVisible(false);
+		doubleMoveButton.setVisible(false);
+		firstMoveLocationsBox.setVisible(false);
+		firstMoveTicketBox.setVisible(false);
+		move1.setVisible(false);
+		moveto1.setVisible(false);
+		usingTicket1.setVisible(false);
+		
+	}
+	
+	public void displayMoveControls() {
+		displaySecondMove();
+		goButton.setVisible(true);
+		clearButton.setVisible(true);
+		saveButton.setVisible(true);
+		doubleMoveButton.setVisible(true);
+		firstMoveLocationsBox.setVisible(true);
+		firstMoveTicketBox.setVisible(true);
+		move1.setVisible(true);
+		moveto1.setVisible(true);
+		usingTicket1.setVisible(true);
+		
 	}
 	
 	public void addGoButtonListener(ActionListener listener) {
@@ -118,6 +164,10 @@ public class RightSideView extends JPanel{
 	
 	public void addDoubleMoveButtonListener(ActionListener listener) {
 		doubleMoveButton.addActionListener(listener);
+	}
+
+	public void addPassButtonListener(ActionListener listener) {
+		passButton.addActionListener(listener);
 	}
 
 	public void addFirstMoveLocationsListener(ItemListener listener) {
