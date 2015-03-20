@@ -1,0 +1,6 @@
+clean
+compile
+compile-tests
+jar
+play
+test

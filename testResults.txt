@@ -1,0 +1,42 @@
+Buildfile: /home/michael/Documents/scotlandYardA/build.xml
+
+compile:
+
+jar:
+
+compile-tests:
+
+test:
+    [junit] Testsuite: InitialisationTests
+    [junit] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.075 sec
+    [junit] 
+    [junit] Testsuite: RoundsTests
+    [junit] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.019 sec
+    [junit] 
+    [junit] Testsuite: MrXLocationsTests
+    [junit] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.012 sec
+    [junit] 
+    [junit] Testsuite: DetectiveValidMovesTests
+    [junit] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 sec
+    [junit] 
+    [junit] Testsuite: MrXValidMovesTests
+    [junit] Tests run: 10, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 sec
+    [junit] 
+    [junit] Testsuite: PlayTests
+    [junit] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 sec
+    [junit] 
+    [junit] Testsuite: SpectatorTests
+    [junit] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 sec
+    [junit] 
+    [junit] Testsuite: PlayerNotifyTests
+    [junit] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 sec
+    [junit] 
+    [junit] Testsuite: IsGameOverTests
+    [junit] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.014 sec
+    [junit] 
+    [junit] Testsuite: GetWinningPlayersTests
+    [junit] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.006 sec
+    [junit] 
+
+BUILD SUCCESSFUL
+Total time: 0 seconds
