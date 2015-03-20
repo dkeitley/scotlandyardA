@@ -7,14 +7,14 @@ class ModelCreator2
 	public static void main(String[] args)
 	{
 		//number of detectives; show rounds as a comma seperated list
-		ScotlandYardModel model = createModel(2, "2,5,8");
+		ScotlandYardModel model = createModel(2, "2,4");
 		//are you mrX?; numTaxi; numBus; numUnderground; numDouble; numSecret
 		Map<Ticket, Integer> ticketMapMrX = createTicketMap(true, 5,4,8,1,3);
 		Map<Ticket, Integer> ticketMapDetective1 = createTicketMap(false, 7,2,6,0,0);
-		Map<Ticket, Integer> ticketMapDetective2 = createTicketMap(false, 1,2,3,0,0);
+		Map<Ticket, Integer> ticketMapDetective2 = createTicketMap(false, 10,20,30,0,0);
 		// player; colour; start location; ticket map
 		model.join(new PlayerImplementation(), Colour.Black, 1, ticketMapMrX);
-		model.join(new PlayerImplementation(), Colour.Red, 11, ticketMapDetective1);
+		model.join(new PlayerImplementation(), Colour.Red, 47, ticketMapDetective1);
 		model.join(new PlayerImplementation(), Colour.Blue, 21, ticketMapDetective2);
 		
 		GameView view = new GameView();
@@ -53,7 +53,7 @@ class ModelCreator2
 	private static List<Boolean> createShowRoundsList(String showRounds)
 	{
 		String[] rounds = showRounds.split(" , | ,|, |,");
-		Boolean[] roundsList = new Boolean[25]; // 24 rounds 
+		Boolean[] roundsList = new Boolean[6]; // 5 rounds 
 		Arrays.fill(roundsList, false);
 		for(String round : rounds)
 		{

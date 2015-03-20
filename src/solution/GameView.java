@@ -83,5 +83,19 @@ public class GameView {
    			queue.add("Pass");
    	}
    }
+   
+   public void displayMessage(String message) 
+	{
+		JOptionPane.showMessageDialog(window, message);
+	}
+
+
+
+
+
+
+
+
+
 
 }

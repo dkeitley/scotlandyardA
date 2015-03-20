@@ -78,10 +78,24 @@ public class GameView {
 			this.queue = queue;
 	 }
    	 public void actionPerformed(ActionEvent event) {
-   			String isDoubleMove ="false";
-			String firstTarget = "-1";
-			String firstTicket = "Pass";
+   			queue.add("false");
+   			queue.add("-1");
+   			queue.add("Pass");
    	}
    }
+   
+   public void displayMessage(String message) 
+	{
+		JOptionPane.showMessageDialog(window, message);
+	}
+
+
+
+
+
+
+
+
+
 
 }

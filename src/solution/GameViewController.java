@@ -61,6 +61,20 @@ public class GameViewController implements Spectator{
 		
 		view.createView(lsv,map,rsv,movesBar);
 		model.start();
+		win();
+	}
+	
+	private void win()
+	{
+		if(model.getWinningPlayers().contains(Colour.Black))
+		{
+			view.displayMessage("Congratulations MrX you win. Click OK to return to the menu screen");
+		}
+		else
+		{
+			view.displayMessage("Congratulations Detectives you win. Click OK to return to the menu screen");
+		}
+		return;	
 	}
 
 	//Populates initial player info in LSV
@@ -178,7 +192,11 @@ public class GameViewController implements Spectator{
 		view.rsv.displayMoveControls();
 		view.rsv.hideSecondMove();
 		view.rsv.passButton.setVisible(false);
-		if(model.getCurrentPlayer().equals(Colour.Black)) view.rsv.doubleMoveButton.setVisible(true);
+		if(model.getCurrentPlayer().equals(Colour.Black))
+		{
+			view.rsv.doubleMoveButton.setVisible(true);
+			view.lsv.setLocation(Colour.Black, model.getMrXLocation());
+		}
 		else view.rsv.doubleMoveButton.setVisible(false);
 		view.rsv.firstMoveLocationsBox.removeItemListener(firstListener);
 		view.rsv.firstMoveLocationsBox.removeAllItems();
