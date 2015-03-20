@@ -7,13 +7,13 @@ import java.io.*;
 
 class ModelSaver
 {
-	public static void main(String[] args) throws IOException
+	/*public static void main(String[] args) throws IOException
 	{
 		ModelCreator creator = new ModelCreator();
 		ScotlandYardModel model2 = creator.getModel(); 
 		ModelSaver saver = new ModelSaver(model2);
 		saver.save("test.txt");
-	}
+	}*/
 	
 	private ScotlandYardModel model;
 	

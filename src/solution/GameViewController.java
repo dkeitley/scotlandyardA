@@ -60,8 +60,18 @@ public class GameViewController implements Spectator{
 		rsv.addDoubleMoveButtonListener(new DoubleMoveButtonListener());
 		
 		view.createView(lsv,map,rsv,movesBar);
-		model.start();
-		win();
+		Thread t = new Thread(new Runnable() {           
+            public void run() { 
+                model.start();
+				win();
+            } 
+        });
+        t.start();
+		
+		
+		
+		//model.start();
+		//win();
 	}
 	
 	private void win()

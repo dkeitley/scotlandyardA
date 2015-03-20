@@ -54,6 +54,12 @@ class GameSetupPresenter
 						int startingLocation = getStartLocation(colour);
 						model.join(new PlayerImplementation(), colour, startingLocation, ticketMap);
 					}
+					System.out.println(model.isReady());
+					System.out.println(model.isGameOver());
+					GameView gameView = new GameView();
+					GameViewController controller = new GameViewController(model, gameView);
+					view.dispose();
+					controller.run();
 				}
 				else
 				{
