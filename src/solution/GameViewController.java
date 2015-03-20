@@ -134,6 +134,7 @@ public class GameViewController implements Spectator{
 
 		rsv.setFirstMoveLocations(firstMoveLocations);
 		rsv.hideSecondMove();
+		rsv.setRoundNum(1);
 	}
 
 	//creates a set of MoveTickets from a set of Moves
@@ -183,11 +184,17 @@ public class GameViewController implements Spectator{
 			}
 			view.lsv.setLocation(colour, model.getPlayerLocation(colour));
 		}
-		view.rsv.setRoundNum(model.getRound());
-		for(int i = 1; i < model.getRound() ; i++) 
+		//NEED TO SORT ROUND NUM OUT
+		view.rsv.setRoundNum(model.getRound()+1);
+
+		for(int i = 1; i <= model.getRound() ; i++) 
 		{
 			MoveTicket moveTicket = model.mrXMoves(i);
-			view.movesBar.addMrXMove(moveTicket.ticket,model.getRounds().get(i),i,moveTicket.target);
+			String text = moveTicket.ticket.toString();
+			if(model.getRounds().get(i)) {
+				text += " " + moveTicket.target;
+			}
+			view.movesBar.addMrXMove(text,i);
 		}
 		return;
 	}
@@ -206,6 +213,7 @@ public class GameViewController implements Spectator{
 		
 		Set<Integer> targets = new HashSet<Integer>();
 		validDoubleMoves.clear();
+		System.out.println(validDoubleMoves.size());
 		for(Move move:moves) {
 			if(move instanceof MoveTicket) {
 				MoveTicket moveTicket = (MoveTicket) move;
@@ -306,7 +314,6 @@ public class GameViewController implements Spectator{
 			
 			
 			int chosenLocation = view.rsv.getFirstLocation();
-			System.out.println("chosen LOCATION: " +chosenLocation);
 			Set<Ticket> possibleTickets = new HashSet<Ticket>();
 
 			for(MoveTicket moveTicket : validMoveTickets) {
