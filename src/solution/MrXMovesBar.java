@@ -1,13 +1,16 @@
 package solution;
+
 import scotlandyard.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
+
 class MrXMovesBar extends JPanel {
 
 	private JTable table;
 	
 	public MrXMovesBar(int rounds) {
+	
 		JTable table = new JTable(rounds,1);
 		String columnTitle = "Mr X's Moves";
 		table.getColumn("A").setHeaderValue(columnTitle);
@@ -22,8 +25,4 @@ class MrXMovesBar extends JPanel {
 	public void addMrXMove(String text, int round) {
 		table.setValueAt(text,round-1,0);
 	}
-	/* TASKS
-	 * highlight the show rounds with a different colour
-	 * add functions to update elements of the table
-	*/	
 }

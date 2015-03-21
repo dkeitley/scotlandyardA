@@ -10,9 +10,7 @@ class WelcomePresenter
 	{
 		WelcomeView view2 = new WelcomeView();
 		SwingUtilities.invokeLater(view2::run);
-		
 		WelcomePresenter presenter = new WelcomePresenter(view2);
-		 
 	}
 	
 	private WelcomeView view;
@@ -40,7 +38,16 @@ class WelcomePresenter
 			}
 			else if(action.equals("Load a saved game"))
 			{
-				System.out.println("load has been clicked");
+				try {
+					ModelReader reader = new ModelReader();
+					ScotlandYardModel model = reader.getModel("gameSave.txt");
+					GameView gameView = new GameView();
+					GameViewController controller = new GameViewController(model, gameView);
+					view.dispose();
+					controller.run();
+				} catch(Exception e) {
+					view.displayErrorMessage("Oops, no games saved. Please start a new game.");
+				}
 			}
 			else if(action.equals("Quit"))
 			{

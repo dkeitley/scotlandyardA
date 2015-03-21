@@ -14,6 +14,7 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
 	private final Map<Colour,Player> colourToPlayer;
 	private Map<Colour,Integer> colourToLocation;
 	private Map<Colour,Map<Ticket,Integer>> colourToTickets;
+	private Map<Colour,Map<Ticket,Integer>> colourToOriginalTickets;
 	private List<Colour> orderOfPlay; 
 	private int numberOfDetectives;
 	private final List<Boolean> showRounds; 
@@ -21,6 +22,7 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
 	private List<Spectator> spectators;
 	private int lastKnownLocation;
 	private List<MoveTicket> mrXMoves;
+	private List<Move> movesMade;
 	//so part way through a trun a game can't end - all internal refrences to 
 	//checking if a game is over should refer to this not the function
 	private Boolean isGameOver;
@@ -60,9 +62,11 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
 		orderOfPlay = new ArrayList<Colour>();		
 		colourToPlayer = new HashMap<Colour,Player>();
 		colourToTickets = new HashMap<Colour,Map<Ticket,Integer>>();
+		colourToOriginalTickets = new HashMap<Colour,Map<Ticket,Integer>>();
 		colourToLocation = new HashMap<Colour, Integer>();
 		spectators = new ArrayList<Spectator>();
 		mrXMoves = new ArrayList<MoveTicket>();
+		movesMade = new ArrayList<Move>();
 		currentPlayer = Colour.valueOf("Black");
 		currentRound = 0;
 		lastKnownLocation = 0;
@@ -111,6 +115,7 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
     	{
     		putPlayerTickets(Colour.Black, ticket , 1);	
     	}
+    	movesMade.add(move);
     	updateSpectators(player, move);
     }
     
@@ -128,6 +133,7 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
     	{
 			s.notify(new MoveDouble(player, notifyMove, notifyMove));
     	}
+    	movesMade.add(move);
     	play(firstMove);
     	play(secondMove);
     }
@@ -140,6 +146,7 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
     	{
 			s.notify(move); 
 		}
+		movesMade.add(move);
     	return;
     }
 	
@@ -357,8 +364,19 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
 			colourToLocation.put(colour,location);
 			if(showRounds.get(0) == true && colour.equals(Colour.Black)) lastKnownLocation = location;
 			colourToTickets.put(colour,tickets);
+			colourToOriginalTickets.put(colour, cloneTicketMap(tickets));
 	   	}
 		return true;
+    }
+    
+    private Map<Ticket, Integer> cloneTicketMap(Map<Ticket, Integer> tickets)
+    {
+    	Map<Ticket, Integer> newTicketMap = new HashMap();
+    	for(Ticket ticket : tickets.keySet())
+    	{
+    		newTicketMap.put(ticket, tickets.get(ticket));
+    	}
+    	return  newTicketMap;
     }
 
     @Override
@@ -417,11 +435,22 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
     	if(mrXMoves.size() < roundNum) return null; 
     	else return mrXMoves.get(roundNum - 1);
     }
+    
+    public List<Move> movesMade()
+    {
+    	return movesMade;
+    }
 
     @Override
     public int getPlayerTickets(Colour colour, Ticket ticket) 
     {
         Map<Ticket,Integer> ticketMap = colourToTickets.get(colour);
+        return ticketMap.get(ticket);
+    }
+    
+    public int getPlayerOriginalTickets(Colour colour, Ticket ticket) 
+    {
+        Map<Ticket,Integer> ticketMap = colourToOriginalTickets.get(colour);
         return ticketMap.get(ticket);
     }
     

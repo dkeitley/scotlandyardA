@@ -21,7 +21,7 @@ class WelcomeView extends JFrame
 	
 	void run()
 	{
-    	setDefaultCloseOperation(EXIT_ON_CLOSE);
+    		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		add(display());
 		pack();
 		setLocationByPlatform(true);
@@ -30,9 +30,12 @@ class WelcomeView extends JFrame
 	
 	private Box display()
 	{
+		Box box = Box.createHorizontalBox();
+		box.add(graphic());
 		Box display = Box.createVerticalBox();
-		display.add(graphic());
+		display.add(box);
 		display.add(buttons());
+		
 		return display;
 	}
 	
@@ -78,6 +81,11 @@ class WelcomeView extends JFrame
 	public void addQuitButtonListner(ActionListener listener)
 	{
 		this.quit.addActionListener(listener);
+	}
+
+	public void displayErrorMessage(String errorMessage) 
+	{
+		JOptionPane.showMessageDialog(this, errorMessage);
 	}
 }
 

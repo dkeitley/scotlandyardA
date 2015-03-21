@@ -4,14 +4,17 @@ import scotlandyard.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.awt.*;
-import java.util.*;;
+import java.util.*;
+import java.util.List;
 
 class LeftSideView extends JPanel {
 
 	private Map<Colour,JTable> colourToTable;
 	private Map<Colour, JLabel> colourToLabel;
-	
-	public LeftSideView(java.util.List<Colour> colours) {
+
+	//creates the tables containing player's tickets
+	//@param the players/colours that have joined the game
+	public LeftSideView(List<Colour> colours) {
 		colourToTable = new HashMap<Colour,JTable>();
 		colourToLabel = new HashMap<Colour,JLabel>();
 		Box box = Box.createVerticalBox();
@@ -24,6 +27,7 @@ class LeftSideView extends JPanel {
 			} else {
 				table = new JTable(5,1);
 				table.getColumn("A").setHeaderValue("Tickets Available:");
+				table.setPreferredScrollableViewportSize(table.getPreferredSize());
 				table.setFillsViewportHeight(true);
 				
 			}
@@ -36,7 +40,7 @@ class LeftSideView extends JPanel {
 		this.add(scrollPane);
 	}
 
-	//returns a box containing player and location labels
+	//@return box containing player and location labels
 	private Box labels(Colour colour) {
 		Box box = Box.createVerticalBox();
 		box.add(new JLabel(colour.toString()));
@@ -46,15 +50,16 @@ class LeftSideView extends JPanel {
 		return box;
 	}
 
-	//creates a table containing the number of tickets each player has
+	//@return table containing the number of tickets each player has
 	private JTable ticketsTable() {
 		JTable table = new JTable(3,1);
 		table.getColumn("A").setHeaderValue("Tickets Available:");
+		table.setPreferredScrollableViewportSize(table.getPreferredSize());
 		table.setFillsViewportHeight(true);
 		return table;
 	}
-
-	//changes the entry in the tickets table of a player
+	
+	//changes the entry in the tickets table of a given player to the given value
 	public void setNumTickets(Colour colour, Ticket ticket, int value) {
 		JTable table = colourToTable.get(colour);
 		String text;

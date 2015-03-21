@@ -3,6 +3,8 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.net.*;
+import java.awt.geom.*;
+import java.awt.geom.*;
 import scotlandyard.*;
 
 public class MapView extends JPanel {
@@ -12,4 +14,8 @@ public class MapView extends JPanel {
 		JLabel mapLabel = new JLabel(map);
 		this.add(mapLabel,BorderLayout.CENTER);
 	}
+
+	
+
+	
 }

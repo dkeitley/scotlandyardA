@@ -1,4 +1,5 @@
 package solution;
+
 import scotlandyard.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -28,6 +29,7 @@ class GameSetupPresenter
 	
 	class Listener implements ActionListener
 	{
+		//validates user input and starts main game
 		public void actionPerformed(ActionEvent event)
 		{
 			String action = event.getActionCommand();
@@ -54,8 +56,7 @@ class GameSetupPresenter
 						int startingLocation = getStartLocation(colour);
 						model.join(new PlayerImplementation(), colour, startingLocation, ticketMap);
 					}
-					System.out.println(model.isReady());
-					System.out.println(model.isGameOver());
+					
 					GameView gameView = new GameView();
 					GameViewController controller = new GameViewController(model, gameView);
 					view.dispose();
@@ -69,7 +70,8 @@ class GameSetupPresenter
 			}
 		}
 	}
-	
+
+	//chooses random start possition for given colour
 	private int getStartLocation(Colour colour)
 	{
 		int[] mrXPossibleLocations = {146,166,51,104,127,106,45,172,35,132,78,170,71};

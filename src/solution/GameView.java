@@ -1,4 +1,5 @@
 package solution;
+
 import javax.swing.*;
 import java.net.*;
 import scotlandyard.*;
@@ -6,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.awt.event.*;
+import java.awt.Color;
+import java.awt.BorderLayout;
 
 public class GameView {
 	public JFrame window;
@@ -13,6 +16,7 @@ public class GameView {
 	public RightSideView rsv;
 	public MrXMovesBar movesBar;
 	public LeftSideView lsv;
+	public MapView map;
 	
 	public GameView() {
 		window = new JFrame();	
@@ -20,21 +24,27 @@ public class GameView {
 	}
 
 	public void display(Box box) {
-		window.add(box);
+		window.add(box);	
 		window.pack();
 		window.setLocationByPlatform(true);
 		window.setVisible(true);
 	}
+
 	
+	
+	//@param JPanels which make up GameView
 	public void createView(LeftSideView lsv, MapView map, RightSideView rsv, MrXMovesBar movesBar) {
 		mainBox = Box.createHorizontalBox();
 		this.rsv = rsv;
 		this.lsv = lsv;
 		this.movesBar = movesBar;
+		this.map = map;
+		Box rsvBox = Box.createVerticalBox();
+		rsvBox.add(movesBar);
+		rsvBox.add(rsv);
 		mainBox.add(lsv);
 		mainBox.add(map);
-		mainBox.add(rsv);
-		mainBox.add(movesBar);
+		mainBox.add(rsvBox);
 		display(mainBox);
 	}
 
@@ -44,7 +54,8 @@ public class GameView {
 		public PlayListener(BlockingQueue queue) {
 			this.queue = queue;
 		}
-		
+
+		//interprets user's chosen move and puts on blocking queue
 		public void actionPerformed(ActionEvent event) {
 			
 			String isDoubleMove ="false";
@@ -53,7 +64,7 @@ public class GameView {
 			String secondTarget = null;
 			String secondTicket = null;
 			
-			if (rsv.secondMoveLocationsBox.isVisible()) {
+			if (rsv.secondMove.isVisible()) {
 				isDoubleMove = "true";
 				secondTarget = Integer.toString(rsv.getSecondLocation());
 				secondTicket = rsv.getSecondTicket().toString();
@@ -63,7 +74,7 @@ public class GameView {
 			queue.add(firstTarget);
 			queue.add(firstTicket);
 			
-			if(rsv.secondMoveLocationsBox.isVisible()) {
+			if(rsv.secondMove.isVisible()) {
 				queue.add(secondTarget);
 				queue.add(secondTicket);
 			}	
@@ -73,7 +84,8 @@ public class GameView {
    
    class PassListener implements ActionListener {	
   	 private BlockingQueue<String> queue;
-		
+
+	 //places pass move on blocking queue
    	 public PassListener(BlockingQueue queue) {
 			this.queue = queue;
 	 }
@@ -88,14 +100,5 @@ public class GameView {
 	{
 		JOptionPane.showMessageDialog(window, message);
 	}
-
-
-
-
-
-
-
-
-
 
 }

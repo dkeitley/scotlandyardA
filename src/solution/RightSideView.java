@@ -5,16 +5,16 @@ import java.awt.*;
 import java.util.*;
 import java.awt.event.*;
 import java.util.Set;
+import javax.swing.border.*;
 
 public class RightSideView extends JPanel{
 
 	public JLabel roundNumLabel;
-	private JLabel move2;
-	private JLabel moveto;
-	private JLabel usingTicket;
-	public JLabel move1;
-	public JLabel moveto1;
-	public JLabel usingTicket1;
+	private Box labels;
+	private JPanel firstMove;
+	public JPanel secondMove;
+	private JPanel buttons;
+	private JLabel showRoundsLabel;
 	public JComboBox firstMoveLocationsBox;
 	public JComboBox secondMoveLocationsBox;
 	public JComboBox firstMoveTicketBox;
@@ -28,130 +28,105 @@ public class RightSideView extends JPanel{
 	
 	public RightSideView() {
 	
-		Box box = Box.createVerticalBox();
-		box.add(roundBox());
-		currentPlayer = new JLabel("Current Player: Black");
-		box.add(currentPlayer);
-		box.add(moveForm(moveLabels(),moveFields()));
-		box.add(controlButtons());
+		firstMove = firstMove();
+		secondMove = secondMove();
 		passButton = new JButton("Pass");
+		labels = labels();
+		buttons = buttons();
+		Box labelBox = Box.createHorizontalBox();
+		labelBox.add(labels);
+		Box box = Box.createVerticalBox();
+		box.setAlignmentX(LEFT_ALIGNMENT);
+		box.add(labelBox);
+		box.add(firstMove);
+		box.add(secondMove);
+		box.add(buttons);
 		box.add(passButton);
 		this.add(box);
 	}
 
-	Box moveForm(Box labels, Box fields) {
-		Box box = Box.createHorizontalBox();
-		box.add(labels);
-		box.add(fields);
-		return box;
-	}
-	//will need to change this
-	Box moveLabels() {
-		move2 = new JLabel("Move 2:");
-		moveto = new JLabel("Move to: ");
-		usingTicket = new JLabel("Using ticket: ");
-		
-		move1 = new JLabel("Move 1:");
-		moveto1 = new JLabel("Move to: ");
-		usingTicket1 = new JLabel("Using ticket: ");
-		
-		Box box = Box.createVerticalBox();
-		
-		box.add(move1);
-		box.add(moveto1);
-		box.add(usingTicket1);
-		box.add(move2);
-		box.add(moveto);
-		box.add(usingTicket);
-		return box;
-	}
-	
-	Box moveFields() {
-		JComboBox<String> moves1 = new JComboBox<String>();
-		JComboBox<String> tickets1 = new JComboBox<String>();
-		JComboBox<String> moves2 = new JComboBox<String>();
-		JComboBox<String> tickets2 = new JComboBox<String>();
+	//@return box 	JPanel containing first move controls
+	JPanel firstMove() {
+		GridLayout grid = new GridLayout(3,2,10,10);
+		Border border = BorderFactory.createEmptyBorder(10,10,10,10);
+		firstMoveLocationsBox = new JComboBox<String>();
+		firstMoveTicketBox = new JComboBox<String>();
 		doubleMoveButton = new JButton("Use Double Move");
-		
-		firstMoveLocationsBox = moves1;
-		firstMoveTicketBox = tickets1;
-		secondMoveLocationsBox = moves2;
-		secondMoveTicketBox = tickets2;
-		
-		Box box = Box.createVerticalBox();
-		box.add(moves1);
-		box.add(tickets1);
+		JPanel box = new JPanel();
+		box.setLayout(grid);
+		box.setBorder(border);
+		box.add(new JLabel("Move to: "));
+		box.add(firstMoveLocationsBox);
+		box.add(new JLabel("Using ticket: "));
+		box.add(firstMoveTicketBox);
 		box.add(doubleMoveButton);
-		box.add(moves2);
-		box.add(tickets2);
-		
 		return box;
 	}
 
-
-
-	Box roundBox() {
-		Box box = Box.createHorizontalBox();
-		box.add(new JLabel("Round: "));
-		roundNumLabel = new JLabel();
-		box.add(roundNumLabel);
+	//@return box 	JPanel containing second move controls
+	JPanel secondMove() {
+		GridLayout grid = new GridLayout(3,1,5,5);
+		Border border = BorderFactory.createEmptyBorder(5,5,5,5);
+		JPanel box = new JPanel();
+		box.setLayout(grid);
+		box.setBorder(border);
+		secondMoveLocationsBox = new JComboBox<String>();
+		secondMoveTicketBox = new JComboBox<String>();
+		box.add(new JLabel("Move to: "));
+		box.add(secondMoveLocationsBox);
+		box.add(new JLabel("Using ticket: "));
+		box.add(secondMoveTicketBox);
 		return box;
+	}	
+
+
+	//@return labels    box containing game status labels
+	Box labels() {
+		Box labels = Box.createVerticalBox();
+		roundNumLabel = new JLabel("Round: ");
+		showRoundsLabel = new JLabel("Show rounds: ");
+		currentPlayer = new JLabel("Current Player: Black");
+		labels.add(roundNumLabel);
+		labels.add(showRoundsLabel);
+		labels.add(currentPlayer);
+		return labels;
 	}
 
-	Box controlButtons() {
-		Box box = Box.createHorizontalBox();
+	//@return buttons   JPanel containing action buttons
+	JPanel buttons() {
 		saveButton = new JButton("Save Game");
 		goButton = new JButton("Go");
 		clearButton = new JButton("Clear");
-		box.add(goButton);
-		box.add(saveButton);
-		box.add(clearButton);
-		return box;
+		GridLayout grid = new GridLayout(3,1,10,10);
+		Border border = BorderFactory.createEmptyBorder(10,10,10,10);
+		JPanel buttons = new JPanel();
+		buttons.setLayout(grid);
+		buttons.setBorder(border);
+		buttons.add(goButton);
+		buttons.add(saveButton);
+		buttons.add(clearButton);
+		return buttons;
 	}
 
 	public void displaySecondMove() {
-		secondMoveLocationsBox.setVisible(true);
-		secondMoveTicketBox.setVisible(true);
-		move2.setVisible(true);
-		moveto.setVisible(true);
-		usingTicket.setVisible(true);
-		
+		secondMove.setVisible(true);
 	}
 
 	public void hideSecondMove() {
-		secondMoveLocationsBox.setVisible(false);
-		secondMoveTicketBox.setVisible(false);
-		move2.setVisible(false);
-		moveto.setVisible(false);
-		usingTicket.setVisible(false);
+		secondMove.setVisible(false);
 	}
 	
 	public void hideMoveControls() {
-		hideSecondMove();
-		goButton.setVisible(false);
-		clearButton.setVisible(false);
-		saveButton.setVisible(false);
-		doubleMoveButton.setVisible(false);
-		firstMoveLocationsBox.setVisible(false);
-		firstMoveTicketBox.setVisible(false);
-		move1.setVisible(false);
-		moveto1.setVisible(false);
-		usingTicket1.setVisible(false);
+		buttons.setVisible(false);
+		firstMove.setVisible(false);
+		passButton.setVisible(true);
 		
 	}
 	
 	public void displayMoveControls() {
 		displaySecondMove();
-		goButton.setVisible(true);
-		clearButton.setVisible(true);
-		saveButton.setVisible(true);
-		doubleMoveButton.setVisible(true);
-		firstMoveLocationsBox.setVisible(true);
-		firstMoveTicketBox.setVisible(true);
-		move1.setVisible(true);
-		moveto1.setVisible(true);
-		usingTicket1.setVisible(true);
-		
+		buttons.setVisible(true);
+		firstMove.setVisible(true);
 	}
 	
 	public void addGoButtonListener(ActionListener listener) {
@@ -189,15 +164,17 @@ public class RightSideView extends JPanel{
 	}
 
 	public void setRoundNum(int roundNum) {
-		roundNumLabel.setText(Integer.toString(roundNum));
+		roundNumLabel.setText("Round: " + Integer.toString(roundNum));
 	}
 
-	//may want to order these sets....
+	public void setShowRounds(String text) {
+		showRoundsLabel.setText(text);
+	}
+	
 	public void setFirstMoveLocations(Set<Integer> moves) {
 		for(Integer move:moves) {
 			firstMoveLocationsBox.addItem(move);
 		}
-		
 	}
 
 	public void setSecondMoveLocations(Set<Integer> locations) {

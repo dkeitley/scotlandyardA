@@ -23,7 +23,7 @@ class GameSetupView extends JFrame
 		addPlayer = new JButton("Add player");
 		startGame = new JButton("Start Game");
 		this.numRounds = new JTextField("24");
-		this.showRounds = new JTextField("3,8,13,18,24"); //check
+		this.showRounds = new JTextField("3,8,13,18,24"); 
 		this.players = Box.createVerticalBox();
 		this.playerBoxes = new java.util.ArrayList();
 	}
@@ -31,7 +31,7 @@ class GameSetupView extends JFrame
 	public void run()
 	{
 		setBackground(new Color(255, 255, 255));
-    	setDefaultCloseOperation(EXIT_ON_CLOSE);
+    		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.scrollable = display();
 		add(this.scrollable);
 		pack();
@@ -105,9 +105,9 @@ class GameSetupView extends JFrame
 		this.players.add(detective);
 		this.playerBoxes.add(detective);
 		this.players.validate();
-        this.players.repaint();
-        this.scrollable.validate();
-        this.scrollable.repaint();
+       		this.players.repaint();
+        	this.scrollable.validate();
+        	this.scrollable.repaint();
 	}
 	
 	public  java.util.List<PlayerBox> getPlayerBoxes()

@@ -6,15 +6,7 @@ import java.util.*;
 import java.io.*;
 
 class ModelSaver
-{
-	/*public static void main(String[] args) throws IOException
-	{
-		ModelCreator creator = new ModelCreator();
-		ScotlandYardModel model2 = creator.getModel(); 
-		ModelSaver saver = new ModelSaver(model2);
-		saver.save("test.txt");
-	}*/
-	
+{	
 	private ScotlandYardModel model;
 	
 	public ModelSaver(ScotlandYardModel model)
@@ -22,8 +14,14 @@ class ModelSaver
 		this.model = model;
 	}
 	
+	//compiles all lines and calles save on created string
 	public void save(String fileName) throws IOException
 	{
+		try {
+			File file = new File(fileName);
+			file.delete();
+		} catch (Exception e) {};
+
 		String modelString = "";
 		modelString += orderOfPlayToString(model) + "\n";
 		for(Colour player : model.getPlayers())
@@ -31,22 +29,26 @@ class ModelSaver
 			modelString += playerToString(player, model) + "\n";
 		}
 		modelString += model.getCurrentPlayer() + "\n";
-		modelString += model.getRound() + "\n";
 		modelString += showRoundsToString(model) + "\n";
-		modelString += mrXMovesToString(model);
+		modelString += movesToString(model);
 		writeToFile(fileName, modelString);
 		return;
 	}
 	
-	private String mrXMovesToString(ScotlandYardModel model)
+	//prints line of all moves made in game so far
+	private String movesToString(ScotlandYardModel model)
 	{
 		String moves = "";
-		int numRounds = model.getRound();
-		for(int i = 1; i <= numRounds; i++)
+		for(Move move : model.movesMade())
 		{
-			moves = moves + model.mrXMoves(i).toString() + ",";
+			String moveString = "";
+			if (move instanceof MoveTicket) moveString = ((MoveTicket) move).toString();
+   			if (move instanceof MoveDouble) moveString =  ((MoveDouble) move).toString();
+    		if (move instanceof MovePass) moveString =  ((MovePass) move).toString();
+			
+			moves = moves + moveString  + ",";
 		}
-		if(numRounds == 0) return "";
+		if(model.movesMade().size() == 0) return "";
 		return moves.substring(0, moves.length() - 1);
 	}
 	
@@ -72,18 +74,19 @@ class ModelSaver
 		return players;
 	}
 	
+	//converts player atributed (tickets, colous location etc) to string
 	private String playerToString(Colour player, ScotlandYardModel model)
 	{
 		int location = 0, doubleMoves = 0, secret = 0, lastKnownLocation = 0;
 		int bus, taxi, underground;
-		taxi = model.getPlayerTickets(player, Ticket.Taxi);
-		bus = model.getPlayerTickets(player, Ticket.Bus);
-		underground = model.getPlayerTickets(player, Ticket.Underground);
+		taxi = model.getPlayerOriginalTickets(player, Ticket.Taxi);
+		bus = model.getPlayerOriginalTickets(player, Ticket.Bus);
+		underground = model.getPlayerOriginalTickets(player, Ticket.Underground);
 		if(player.equals(Colour.Black))
 		{
 			location = model.getMrXLocation();
-			doubleMoves =  model.getPlayerTickets(Colour.Black, Ticket.DoubleMove);
-			secret = model.getPlayerTickets(Colour.Black, Ticket.SecretMove);
+			doubleMoves =  model.getPlayerOriginalTickets(Colour.Black, Ticket.DoubleMove);
+			secret = model.getPlayerOriginalTickets(Colour.Black, Ticket.SecretMove);
 			lastKnownLocation = model.getPlayerLocation(Colour.Black);
 		}
 		else location = model.getPlayerLocation(player);
@@ -98,7 +101,7 @@ class ModelSaver
 	
 	private void writeToFile(String fileName, String text) throws IOException
 	{
-    	Files.write(Paths.get(fileName), text.getBytes(), StandardOpenOption.CREATE);
+    		Files.write(Paths.get(fileName), text.getBytes(), StandardOpenOption.CREATE);
   	}
 }
 
