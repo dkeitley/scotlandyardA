@@ -1,4 +1,5 @@
 package solution;
+
 import scotlandyard.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -6,11 +7,6 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
 import javax.swing.*;
-
-//probably worth storing currentPlayer in global variable
-//some very smelly code here
-//may want to put all listeners in a single class
-//may want to initialise all listeners in a single function
 
 public class GameViewController implements Spectator{
 
@@ -20,8 +16,8 @@ public class GameViewController implements Spectator{
 	private Set<Move> validMoves;
 	private ItemListener firstListener;
 	private ItemListener secondListener;
-
 	
+	//subscribes players to this
 	public GameViewController(ScotlandYardModel model, GameView view) {
 		this.model = model;
 		model.spectate(this);
@@ -48,12 +44,12 @@ public class GameViewController implements Spectator{
 		updateMovesBar();
 		addListeners();
 		Thread t = new Thread(new Runnable() {           
-       			public void run() { 
-                		model.start();
+       		public void run(){ 
+            	model.start();
 				win();
-        		} 
-        	});
-       		t.start();
+        	}
+        });	
+       	t.start();
 	}
 
 	//adds actionListeners to widgets in view
@@ -69,17 +65,18 @@ public class GameViewController implements Spectator{
 		view.rsv.addSaveButtonListener(new SaveButtonListener());
 	}
 
-	//displays winning display box at the end of the game
+	//displays winning display box at the end of the game and exits
 	private void win()
 	{
 		if(model.getWinningPlayers().contains(Colour.Black))
 		{
-			view.displayMessage("Congratulations MrX you win. Click OK to return to the menu screen");
+			view.displayMessage("Congratulations MrX you win. Click OK to exit");
 		}
 		else
 		{
-			view.displayMessage("Congratulations Detectives you win. Click OK to return to the menu screen");
+			view.displayMessage("Congratulations Detectives you win. Click OK to exit");
 		}
+		System.exit(0);
 		return;	
 	}
 
@@ -150,8 +147,10 @@ public class GameViewController implements Spectator{
 	public void notify(Move move)
 	{
 		update(move);
+		return;
 	}
-
+	
+	//updates view based on move that has hust been made
 	private void update(Move move)
 	{
 		updateLSV();
@@ -193,7 +192,7 @@ public class GameViewController implements Spectator{
 		updateMovesBar();
 		return;
 	}
-
+	
 	private void updateMovesBar() {
 		for(int j = 1;j<model.getRounds().size();j++) {
 			view.movesBar.addMrXMove(j + ") ",j);
@@ -251,6 +250,7 @@ public class GameViewController implements Spectator{
 		return;
 	}
 
+	//pulls move just made from queue
 	private Move getFromQueue()
 	{
 		try
@@ -264,7 +264,7 @@ public class GameViewController implements Spectator{
 			MoveTicket move1 = new MoveTicket(model.getCurrentPlayer(), target, Ticket.valueOf(queue.take())); 
 			if(isDoubleMove == "true")
 			{
-				MoveTicket move2 = new MoveTicket(model.getCurrentPlayer(), Integer.parseInt(queue.take()), 							       Ticket.valueOf(queue.take()));
+				MoveTicket move2 = new MoveTicket(model.getCurrentPlayer(), Integer.parseInt(queue.take()), Ticket.valueOf(queue.take()));
 				return findDoubleMove(move1,move2);
 			}
 			else
@@ -389,6 +389,8 @@ public class GameViewController implements Spectator{
 	}
 
 	class SaveButtonListener implements ActionListener {
+		
+		//saves game
 		public void actionPerformed(ActionEvent event) {
 			ModelSaver saver = new ModelSaver(model);
 			try {
@@ -399,5 +401,6 @@ public class GameViewController implements Spectator{
 			}
 		}
 	}
-
+	
 }
+

@@ -1,4 +1,5 @@
 package solution;
+
 import scotlandyard.*;
 import javax.swing.*;
 import java.awt.*;
@@ -9,23 +10,24 @@ import javax.swing.border.*;
 
 public class RightSideView extends JPanel{
 
-	public JLabel roundNumLabel;
+	protected JLabel roundNumLabel;
 	private Box labels;
 	private JPanel firstMove;
-	public JPanel secondMove;
+	protected JPanel secondMove;
 	private JPanel buttons;
 	private JLabel showRoundsLabel;
-	public JComboBox firstMoveLocationsBox;
-	public JComboBox secondMoveLocationsBox;
-	public JComboBox firstMoveTicketBox;
-	public JComboBox secondMoveTicketBox;
-	public JButton doubleMoveButton;
-	public JButton goButton;
-	public JButton saveButton;
-	public JButton clearButton;
-	public JLabel currentPlayer;
-	public JButton passButton;
+	protected JComboBox firstMoveLocationsBox;
+	protected JComboBox secondMoveLocationsBox;
+	protected JComboBox firstMoveTicketBox;
+	protected JComboBox secondMoveTicketBox;
+	protected JButton doubleMoveButton;
+	protected JButton goButton;
+	protected JButton saveButton;
+	protected JButton clearButton;
+	protected JLabel currentPlayer;
+	protected JButton passButton;
 	
+	//adds all components to panel
 	public RightSideView() {
 	
 		firstMove = firstMove();
@@ -45,7 +47,7 @@ public class RightSideView extends JPanel{
 		this.add(box);
 	}
 
-	//@return box 	JPanel containing first move controls
+	//@return box, JPanel containing first move controls
 	JPanel firstMove() {
 		GridLayout grid = new GridLayout(3,2,10,10);
 		Border border = BorderFactory.createEmptyBorder(10,10,10,10);
@@ -63,7 +65,7 @@ public class RightSideView extends JPanel{
 		return box;
 	}
 
-	//@return box 	JPanel containing second move controls
+	//@return box, JPanel containing second move controls
 	JPanel secondMove() {
 		GridLayout grid = new GridLayout(3,1,5,5);
 		Border border = BorderFactory.createEmptyBorder(5,5,5,5);
@@ -80,7 +82,7 @@ public class RightSideView extends JPanel{
 	}	
 
 
-	//@return labels    box containing game status labels
+	//@return labels, box containing game status labels
 	Box labels() {
 		Box labels = Box.createVerticalBox();
 		roundNumLabel = new JLabel("Round: ");
@@ -92,7 +94,7 @@ public class RightSideView extends JPanel{
 		return labels;
 	}
 
-	//@return buttons   JPanel containing action buttons
+	//@return buttons, JPanel containing action buttons
 	JPanel buttons() {
 		saveButton = new JButton("Save Game");
 		goButton = new JButton("Go");
@@ -120,7 +122,6 @@ public class RightSideView extends JPanel{
 		buttons.setVisible(false);
 		firstMove.setVisible(false);
 		passButton.setVisible(true);
-		
 	}
 	
 	public void displayMoveControls() {
@@ -229,3 +230,4 @@ public class RightSideView extends JPanel{
 	}
 
 }
+

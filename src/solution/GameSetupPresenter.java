@@ -7,15 +7,18 @@ import javax.swing.*;
 import java.util.*;
 import java.util.List;
 import java.lang.*;
+import java.io.File;
+
 
 class GameSetupPresenter
 {
+	/*for testing
 	public static void main(String[] args)
 	{
 		GameSetupView view2 = new GameSetupView();
 		GameSetupPresenter presenter = new GameSetupPresenter(view2);
 		view2.run();
-	}
+	}*/
 	
 	private GameSetupView view;
 	private List<Integer> OcupiedLocations = new ArrayList();
@@ -29,34 +32,21 @@ class GameSetupPresenter
 	
 	class Listener implements ActionListener
 	{
-		//validates user input and starts main game
+		//validates user input and starts main game if appropriate
 		public void actionPerformed(ActionEvent event)
 		{
 			String action = event.getActionCommand();
 			if(action.equals("addPlayer"))
 			{
-				if(view.getPlayerBoxes().size() < 6)
-				{
-					view.addPlayerBox();
-				}
-				else
-				{
-					view.displayErrorMessage("You can have a maximum of 6 players");
-				}
+				if(view.getPlayerBoxes().size() < 6) view.addPlayerBox();
+				else view.displayErrorMessage("You can have a maximum of 6 players");
 			}
 			else if(action.equals("startGame"))
 			{
 				if(validateInput())
 				{
 					ScotlandYardModel model = createModel(view.getShowRounds());
-					for (PlayerBox box : view.getPlayerBoxes())
-					{
-						Colour colour = box.getColour();
-						Map<Ticket, Integer> ticketMap = createTicketMap(box);
-						int startingLocation = getStartLocation(colour);
-						model.join(new PlayerImplementation(), colour, startingLocation, ticketMap);
-					}
-					
+					model = addPlayers(model);
 					GameView gameView = new GameView();
 					GameViewController controller = new GameViewController(model, gameView);
 					view.dispose();
@@ -66,9 +56,20 @@ class GameSetupPresenter
 				{
 					view.displayErrorMessage("Oops. Looks like you entered something wrong. Please try again");
 				}
-				
 			}
 		}
+	}
+	
+	private ScotlandYardModel addPlayers(ScotlandYardModel model)
+	{
+		for (PlayerBox box : view.getPlayerBoxes())
+		{
+			Colour colour = box.getColour();
+			Map<Ticket, Integer> ticketMap = createTicketMap(box);
+			int startingLocation = getStartLocation(colour);
+			model.join(new PlayerImplementation(), colour, startingLocation, ticketMap);
+		}
+		return model;
 	}
 
 	//chooses random start possition for given colour
@@ -93,6 +94,7 @@ class GameSetupPresenter
 		}
 		return location;
 	}
+	
 	
 	private Map<Ticket, Integer> createTicketMap(PlayerBox box)
 	{
@@ -136,6 +138,7 @@ class GameSetupPresenter
 		return true;
 	}
 	
+	// checks that string is non-negative integer
 	private boolean validateInt(String num)
 	{
 		try
@@ -155,7 +158,7 @@ class GameSetupPresenter
 		 java.util.List<Boolean> rounds = createShowRoundsList(showRounds);
 		 try
 		 {
-		 	return new ScotlandYardModel(numDetctives, rounds, "../resources/graph.txt"); 
+		 	return new ScotlandYardModel(numDetctives, rounds, "graph.txt"); 
 		 }
 		 catch(Exception e) 
 		 {
@@ -176,26 +179,4 @@ class GameSetupPresenter
 		return Arrays.asList(roundsList);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

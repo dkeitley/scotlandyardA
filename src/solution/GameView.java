@@ -11,12 +11,10 @@ import java.awt.Color;
 import java.awt.BorderLayout;
 
 public class GameView {
-	public JFrame window;
-	public Box mainBox;
-	public RightSideView rsv;
-	public MrXMovesBar movesBar;
-	public LeftSideView lsv;
-	public MapView map;
+	private JFrame window;
+	protected RightSideView rsv;
+	protected MrXMovesBar movesBar;
+	protected LeftSideView lsv;
 	
 	public GameView() {
 		window = new JFrame();	
@@ -29,16 +27,14 @@ public class GameView {
 		window.setLocationByPlatform(true);
 		window.setVisible(true);
 	}
-
-	
 	
 	//@param JPanels which make up GameView
+	//constructs box containing all view components
 	public void createView(LeftSideView lsv, MapView map, RightSideView rsv, MrXMovesBar movesBar) {
-		mainBox = Box.createHorizontalBox();
+		Box mainBox = Box.createHorizontalBox();
 		this.rsv = rsv;
 		this.lsv = lsv;
 		this.movesBar = movesBar;
-		this.map = map;
 		Box rsvBox = Box.createVerticalBox();
 		rsvBox.add(movesBar);
 		rsvBox.add(rsv);
@@ -82,23 +78,24 @@ public class GameView {
 		}
    }
    
-   class PassListener implements ActionListener {	
-  	 private BlockingQueue<String> queue;
-
-	 //places pass move on blocking queue
-   	 public PassListener(BlockingQueue queue) {
+	class PassListener implements ActionListener {	
+		private BlockingQueue<String> queue;
+	
+		public PassListener(BlockingQueue queue) {
 			this.queue = queue;
-	 }
-   	 public void actionPerformed(ActionEvent event) {
-   			queue.add("false");
-   			queue.add("-1");
-   			queue.add("Pass");
-   	}
-   }
-   
+		}
+		
+		//places pass move on blocking queue
+		public void actionPerformed(ActionEvent event) {
+			queue.add("false");
+			queue.add("-1");
+			queue.add("Pass");
+		}
+	}
+	   
    public void displayMessage(String message) 
 	{
 		JOptionPane.showMessageDialog(window, message);
 	}
-
 }
+

@@ -18,6 +18,7 @@ class GameSetupView extends JFrame
 	private java.util.List<PlayerBox> playerBoxes;
 	private JFrame w;
 	 
+	//initilises graphical objects
 	public GameSetupView()
 	{
 		addPlayer = new JButton("Add player");
@@ -28,10 +29,11 @@ class GameSetupView extends JFrame
 		this.playerBoxes = new java.util.ArrayList();
 	}
 	
+	//popultaes frame and displays
 	public void run()
 	{
 		setBackground(new Color(255, 255, 255));
-    		setDefaultCloseOperation(EXIT_ON_CLOSE);
+    	setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.scrollable = display();
 		add(this.scrollable);
 		pack();
@@ -39,6 +41,7 @@ class GameSetupView extends JFrame
 		setVisible(true);
 	}
 	
+	//puts all elemenst in scrollable pane
 	private JScrollPane display()
 	{
 		Box display = Box.createVerticalBox();
@@ -49,6 +52,7 @@ class GameSetupView extends JFrame
 		return new JScrollPane(display);
 	}
 	
+	//creates box to all hold player boxes 
 	private Box players()
 	{
 		PlayerBox mrX = new PlayerBox(true);
@@ -67,6 +71,7 @@ class GameSetupView extends JFrame
 		return addPlayer;
 	}
 	
+	//creates Panel to hold all game options
 	private JPanel gameOptions()
 	{
 		JPanel options = new JPanel();
@@ -98,6 +103,7 @@ class GameSetupView extends JFrame
 		return;
 	}
 	
+	//ecah time called adds one detective box to screen below all others
 	public void addPlayerBox()
 	{
 		this.players.add(Box.createRigidArea(new Dimension(10, 5)));
@@ -105,9 +111,9 @@ class GameSetupView extends JFrame
 		this.players.add(detective);
 		this.playerBoxes.add(detective);
 		this.players.validate();
-       		this.players.repaint();
-        	this.scrollable.validate();
-        	this.scrollable.repaint();
+       	this.players.repaint();
+        this.scrollable.validate();
+        this.scrollable.repaint();
 	}
 	
 	public  java.util.List<PlayerBox> getPlayerBoxes()
@@ -130,22 +136,4 @@ class GameSetupView extends JFrame
 		JOptionPane.showMessageDialog(this, errorMessage);
 	}	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -6,15 +6,17 @@ import javax.swing.*;
 
 class WelcomePresenter
 {
-	public static void main(String[] args)
+	//for testing 
+	/*public static void main(String[] args)
 	{
 		WelcomeView view2 = new WelcomeView();
 		SwingUtilities.invokeLater(view2::run);
 		WelcomePresenter presenter = new WelcomePresenter(view2);
-	}
+	}*/
 	
 	private WelcomeView view;
 	
+	//adds listners
 	public WelcomePresenter(WelcomeView view)
 	{
 		this.view = view;
@@ -26,6 +28,7 @@ class WelcomePresenter
 	
 	class Listener implements ActionListener
 	{
+		//handles startup buttons
 		public void actionPerformed(ActionEvent event)
 		{
 			String action = event.getActionCommand();
@@ -56,3 +59,4 @@ class WelcomePresenter
 		}
 	}
 }
+

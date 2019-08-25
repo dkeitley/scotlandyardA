@@ -17,6 +17,7 @@ class PlayerBox extends JPanel
 	private JTextField numUnderground;
 	private boolean mrX;
 	
+	//creates correct box depending if player is mrX or detective
 	public PlayerBox(boolean playIsMrX)
 	{
 		this.mrX = playIsMrX;
@@ -37,17 +38,10 @@ class PlayerBox extends JPanel
 			this.numSecret = new JTextField();
 		}
 		this.setBackground(new Color(169, 169, 169));
-		//this.add(graphic());
 		this.add(options());
 	}
 	
-	/*private JLabel graphic()
-	{
-		URL u = this.getClass().getResource("testImage.png");
-   	 	ImageIcon icon = new ImageIcon(u);
-   	 	return new JLabel(icon);
-	}*/
-	
+	//box to hold all menus
 	private JPanel options()
 	{
 		JPanel options = new JPanel();
@@ -58,6 +52,7 @@ class PlayerBox extends JPanel
         return options;
 	}
 	
+	//adds lables and boxes associated with colour
 	private void addColourOptions(JPanel options)
 	{
 		options.add(new JLabel("Colour of player: "));
@@ -76,6 +71,7 @@ class PlayerBox extends JPanel
 		return;
 	}
 	
+	//adds lables and boxes associated with tickets
 	private void addTicketOptions(JPanel options)
 	{
 		options.add(new JLabel("Number of tickets: "));
@@ -126,8 +122,4 @@ class PlayerBox extends JPanel
 		return numSecret.getText();
 	}
 }
-
-
-
-
 

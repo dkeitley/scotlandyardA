@@ -12,6 +12,7 @@ class WelcomeView extends JFrame
 	private JButton loadGame;
 	private JButton quit;
 	
+	//creates buttons
 	public WelcomeView()
 	{	
 		this.newGame = button("Start a new game");
@@ -19,15 +20,17 @@ class WelcomeView extends JFrame
 		this.quit = button("Quit");
 	}
 	
+	//packs and sets visable
 	void run()
 	{
-    		setDefaultCloseOperation(EXIT_ON_CLOSE);
+    	setDefaultCloseOperation(EXIT_ON_CLOSE);
 		add(display());
 		pack();
 		setLocationByPlatform(true);
 		setVisible(true);	
 	}
 	
+	//creates box and adds components to it
 	private Box display()
 	{
 		Box box = Box.createHorizontalBox();
@@ -39,6 +42,7 @@ class WelcomeView extends JFrame
 		return display;
 	}
 	
+	//@return JLable containing image
 	private JLabel graphic()
 	{
 		URL u = this.getClass().getResource("graphic.jpg");
@@ -46,6 +50,7 @@ class WelcomeView extends JFrame
    	 	return new JLabel(icon);
 	} 
 	
+	//@return JPanel containing buttons
 	private JPanel buttons()
 	{
 		JPanel buttons = new JPanel();
@@ -59,6 +64,7 @@ class WelcomeView extends JFrame
 		return buttons;
 	}
 	
+	//creates a button and adds button command
 	private JButton button(String buttonText)
 	{
 		Font font = new Font("TimesRoman", Font.PLAIN, 20);
@@ -88,18 +94,4 @@ class WelcomeView extends JFrame
 		JOptionPane.showMessageDialog(this, errorMessage);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

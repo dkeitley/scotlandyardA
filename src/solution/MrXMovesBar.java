@@ -17,11 +17,10 @@ class MrXMovesBar extends JPanel {
 		table.setFillsViewportHeight(true);
 		this.table = table;
 		JScrollPane scrollPane = new JScrollPane(table);
-		scrollPane.setPreferredSize(new Dimension(200,table.getRowHeight()*rounds + 22));
+		scrollPane.setPreferredSize(new Dimension(200, 350));
 		this.add(scrollPane);
 	}
-
-
+	
 	public void addMrXMove(String text, int round) {
 		table.setValueAt(text,round-1,0);
 	}

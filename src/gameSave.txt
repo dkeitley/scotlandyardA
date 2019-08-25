@@ -1,0 +1,6 @@
+Black,Blue
+Black,65,15,15,15,2,5,64
+Blue,80,11,8,4
+Blue
+false,false,false,true,false,false,false,false,true,false,false,false,false,true,false,false,false,false,true,false,false,false,false,false,true
+Black 67 Taxi,Blue 99 Taxi,Black 65 Bus,Blue 80 Taxi,Black 64 Taxi,Blue 99 Taxi,Black 65 Taxi,Blue 80 Taxi,Move Double Black: 64 Taxi -> 65 Taxi,Black 64 Taxi,Black 65 Taxi

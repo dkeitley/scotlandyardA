@@ -82,7 +82,7 @@ class ModelReader
 		return lines;
 	}
 	
-	//creates the ticket map for a player based on string from savefile
+	//creates the ticket map for a player based on strings from savefile
 	private Map<Colour,Integer> getLocationMap(List<String> lines)
 	{
 		Map<Colour,Integer> locations = new HashMap();
@@ -157,59 +157,4 @@ class ModelReader
 		return tickets;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

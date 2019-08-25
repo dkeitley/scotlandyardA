@@ -12,7 +12,7 @@ class LeftSideView extends JPanel {
 	private Map<Colour,JTable> colourToTable;
 	private Map<Colour, JLabel> colourToLabel;
 
-	//creates the tables containing player's tickets
+	//adds all components of LSV to scrollpane
 	//@param the players/colours that have joined the game
 	public LeftSideView(List<Colour> colours) {
 		colourToTable = new HashMap<Colour,JTable>();
@@ -29,7 +29,6 @@ class LeftSideView extends JPanel {
 				table.getColumn("A").setHeaderValue("Tickets Available:");
 				table.setPreferredScrollableViewportSize(table.getPreferredSize());
 				table.setFillsViewportHeight(true);
-				
 			}
 			colourToTable.put(c,table);
 			box.add(new JScrollPane(table));
@@ -90,7 +89,5 @@ class LeftSideView extends JPanel {
 		JLabel location = colourToLabel.get(colour);
 		location.setText("Location: " + value);
 	}
-	
-	
-	
+
 }

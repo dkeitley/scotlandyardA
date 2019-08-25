@@ -23,6 +23,7 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
 	private int lastKnownLocation;
 	private List<MoveTicket> mrXMoves;
 	private List<Move> movesMade;
+	
 	//so part way through a trun a game can't end - all internal refrences to 
 	//checking if a game is over should refer to this not the function
 	private Boolean isGameOver;
@@ -503,7 +504,8 @@ public class ScotlandYardModel extends ScotlandYard implements java.io.Serializa
     	}
     	return players;
     }
-
+	
+	//@return list of show rounds 
     @Override
     public List<Boolean> getRounds() 
     {

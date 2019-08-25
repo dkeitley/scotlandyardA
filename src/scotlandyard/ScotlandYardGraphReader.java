@@ -1,16 +1,20 @@
 package scotlandyard;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.Scanner;
+import java.net.*;
+
 
 public class ScotlandYardGraphReader extends
         GraphReader<Integer, Route> {
 
   @Override
   public Graph<Integer, Route> readGraph(String filename) throws IOException {
-    File file = new File(filename);
-    Scanner in = new Scanner(file);
+
+    InputStream instream = this.getClass().getResourceAsStream(filename);
+    Scanner in = new Scanner(instream);
 
     Graph<Integer, Route> graph = new Graph<Integer, Route>();
 
